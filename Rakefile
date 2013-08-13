@@ -1,9 +1,15 @@
 
 require 'rake/extensiontask'
 
-gem_name = 'jemc_c-example'
-task :default => [:compile]
+gemname = 'jemc_c-example'
+task :default => [:g]
 
-spec = Gem::Specification.load("#{gem_name}.gemspec")
-Rake::ExtensionTask.new(gem_name, spec)
+# Rebuild c extensions
+spec = Gem::Specification.load("#{gemname}.gemspec")
+Rake::ExtensionTask.new(gemname, spec)
 
+# Rebuild gem
+task :g=>[:compile] do exec "
+rm #{gemname}*.gem
+gem build #{gemname}.gemspec
+gem install #{gemname}*.gem" end
