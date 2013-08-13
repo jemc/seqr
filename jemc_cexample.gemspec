@@ -1,9 +1,9 @@
 
 Gem::Specification.new do |s|
   
-  s.name          = 'jemc_c-example'
+  s.name          = 'jemc_cexample'
   s.version       = '0.0.0'
-  s.summary       = 'jemc_c-example'
+  s.summary       = 'jemc_cexample'
   s.description   = "Practice writing/dealing with c extensions for ruby."\
                     " May also be used as skeleton for future c extensions."
   s.authors       = ["Joe McIlvain"]
