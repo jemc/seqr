@@ -9,7 +9,9 @@ Gem::Specification.new do |s|
   s.authors       = ["Joe McIlvain"]
   s.email         = 'joe.eli.mac@gmail.com'
   
-  s.files         = Dir["{lib,ext}/**/*.{rb,c}", "LICENSE", "*.md"]
+  s.files         = Dir["lib/**/*.{rb,so}", 
+                        "ext/**/*.{rb,c}", 
+                        "LICENSE", "*.md"]
   s.require_path  = 'lib'
   
   s.homepage      = 'https://github.com/jemc/ruby-c-ext/'
