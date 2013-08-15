@@ -10,8 +10,8 @@ VALUE JEMC_CExample = Qnil;
 
 void Init_jemc_cexample();
 
-VALUE m_JEMC_CExample_dummy();
-VALUE m_JEMC_CExample_version();
+VALUE m_JEMC_CExample_dummy(VALUE self);
+VALUE m_JEMC_CExample_version(VALUE self);
 VALUE m_JEMC_CExample_passthru(VALUE self, VALUE val);
 
 
@@ -29,12 +29,12 @@ void Init_jemc_cexample()
 }
 
 
-VALUE m_JEMC_CExample_dummy()
+VALUE m_JEMC_CExample_dummy(VALUE self)
 {
   return Qnil;
 }
 
-VALUE m_JEMC_CExample_version()
+VALUE m_JEMC_CExample_version(VALUE self)
 {
   return rb_str_new2(JEMC_CEXAMPLE_VERSION);
 }
