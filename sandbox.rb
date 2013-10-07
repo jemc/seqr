@@ -1,7 +1,4 @@
-require 'jemc_cexample'
+require 'seqr'
 
-p JEMC::CExample
-p JEMC::CExample.singleton_methods(false)
-p JEMC::CExample.dummy
-p JEMC::CExample.version
-p JEMC::CExample.passthru 55
+p Seqr::Ext::JackClient
+p Seqr::Ext::JackClient.dummy

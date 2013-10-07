@@ -1,11 +1,10 @@
 
 Gem::Specification.new do |s|
   
-  s.name          = 'jemc_cexample'
+  s.name          = 'seqr'
   s.version       = '0.0.0'
-  s.summary       = 'jemc_cexample'
-  s.description   = "Practice writing/dealing with c extensions for ruby."\
-                    " May also be used as skeleton for future c extensions."
+  s.summary       = 'seqr'
+  s.description   = "Experiments with audio sequencing in Ruby / C"
   s.authors       = ["Joe McIlvain"]
   s.email         = 'joe.eli.mac@gmail.com'
   
@@ -14,7 +13,7 @@ Gem::Specification.new do |s|
                         "LICENSE", "*.md"]
   s.require_path  = 'lib'
   
-  s.homepage      = 'https://github.com/jemc/ruby-c-ext/'
+  s.homepage      = 'https://github.com/jemc/seqr/'
   s.licenses      = "MIT"
   
   s.add_development_dependency('rake')
