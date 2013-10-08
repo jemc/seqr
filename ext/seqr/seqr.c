@@ -1,5 +1,6 @@
 
 #include <ruby.h>
+#include <jack/jack.h>
 
 // const char JEMC_CEXAMPLE_VERSION[] = "0.0.0";
 
@@ -13,9 +14,10 @@ void Init_seqr();
 
 
 
-VALUE m_JackClient_dummy(VALUE self)
+VALUE m_JackClient_initialize(VALUE self)
 {
-  return Qnil;
+  rb_iv_set(self, "@initialized", Qtrue);
+  return self;
 }
 
 // VALUE m_JEMC_CExample_version(VALUE self)
@@ -35,8 +37,8 @@ void Init_seqr()
   Ext        = rb_define_module_under(Seqr, "Ext");
   JackClient = rb_define_class_under(Ext, "JackClient", rb_cObject);
   
-  rb_define_singleton_method(JackClient,"dummy",
-                           m_JackClient_dummy, 0);
+  rb_define_method(JackClient,"initialize",
+                 m_JackClient_initialize, 0);
   // rb_define_singleton_method(JEMC_CExample,"version",
   //                          m_JEMC_CExample_version, 0);
   // rb_define_singleton_method(JEMC_CExample,"passthru",
