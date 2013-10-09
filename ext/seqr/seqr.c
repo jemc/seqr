@@ -110,8 +110,19 @@ void Init_Jack_Status()
 static jack_client_t* Jack_Client_ptr(VALUE self)
 {
   jack_client_t* ptr;
-  Data_Get_Struct(rb_iv_get(self, "@ptr"), jack_client_t, ptr);
-  return ptr;
+  VALUE ptr_obj;
+  
+  ptr_obj = rb_iv_get(self, "@ptr");
+  if(ptr_obj != Qnil)
+  {
+    Data_Get_Struct(ptr_obj, jack_client_t, ptr);
+    return ptr;
+  }
+  else
+  {
+    rb_raise(rb_eRuntimeError, "Illegal action on dead Jack::Client");
+    return NULL;
+  }
 }
 
 static void Jack_Client_ptr_free(jack_client_t* ptr)
@@ -122,8 +133,9 @@ static void Jack_Client_ptr_free(jack_client_t* ptr)
 VALUE Jack_Client_m_initialize(int argc, VALUE* argv, VALUE self)
 {
   jack_client_t* ptr;
-  char* name;
-  int options;
+  char*          name;
+  int            options;
+  jack_status_t  status;
   
   // Accept custom name as first argument
   if(argc >= 1)
@@ -138,7 +150,9 @@ VALUE Jack_Client_m_initialize(int argc, VALUE* argv, VALUE self)
     options = JackNullOption; // default options
   
   // Open the client
-  ptr = jack_client_open(name, options, NULL);
+  ptr = jack_client_open(name, options, &status);
+  if(ptr == NULL)
+    rb_raise(rb_eRuntimeError, "Failed to open the Jack::Client");
   
   // Save the reference to the client in the @ptr ivar
   rb_iv_set(self, "@ptr", 
