@@ -18,8 +18,11 @@ VALUE Seqr               = Qnil;  void Init_Seqr();
 
 static jack_client_t* Jack_Client_get(VALUE self);
 VALUE Jack_Client_k_alloc(VALUE klass);
-VALUE Jack_Client_m_initialize(VALUE self);
-VALUE Jack_Client_m_close(VALUE self);
+
+VALUE Jack_Client_m_initialize (VALUE self);
+VALUE Jack_Client_m_close      (VALUE self);
+VALUE Jack_Client_m_activate   (VALUE self);
+VALUE Jack_Client_m_deactivate (VALUE self);
 
 ///
 // Module/Class Initialization
@@ -56,6 +59,10 @@ void Init_Jack_Client()
                    Jack_Client_m_initialize, 0);
   rb_define_method(Jack_Client, "close",
                    Jack_Client_m_close, 0);
+  rb_define_method(Jack_Client, "activate",
+                   Jack_Client_m_activate, 0);
+  rb_define_method(Jack_Client, "deactivate",
+                   Jack_Client_m_deactivate, 0);
 }
 
 void Init_Jack_Options()
@@ -125,4 +132,14 @@ VALUE Jack_Client_m_close(VALUE self)
   
   rb_iv_set(self, "@open", Qfalse);
   return INT2NUM(jack_client_close(Jack_Client_get(self)));
+}
+
+VALUE Jack_Client_m_activate(VALUE self)
+{
+  return jack_activate(Jack_Client_get(self));
+}
+
+VALUE Jack_Client_m_deactivate(VALUE self)
+{
+  return jack_deactivate(Jack_Client_get(self));
 }
