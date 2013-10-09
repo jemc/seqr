@@ -2,8 +2,6 @@
 #include <ruby.h>
 #include <jack/jack.h>
 
-// const char JEMC_CEXAMPLE_VERSION[] = "0.0.0";
-
 
 VALUE Seqr            = Qnil;
   VALUE Jack          = Qnil;
