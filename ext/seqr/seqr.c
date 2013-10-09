@@ -11,6 +11,7 @@ VALUE Seqr               = Qnil;  void Init_Seqr();
     VALUE Jack_Client    = Qnil;  void Init_Jack_Client();
     VALUE Jack_Options   = Qnil;  void Init_Jack_Options();
     VALUE Jack_PortFlags = Qnil;  void Init_Jack_PortFlags();
+    VALUE Jack_Status    = Qnil;  void Init_Jack_Status();
 
 ///
 // Function Declarations
@@ -42,8 +43,10 @@ void Init_Jack()
   
   Jack_Options   = rb_define_module_under(Jack, "Options");
   Jack_PortFlags = rb_define_module_under(Jack, "PortFlags");
+  Jack_Status    = rb_define_module_under(Jack, "Status");
   Init_Jack_Options();
   Init_Jack_PortFlags();
+  Init_Jack_Status();
 }
 
 void Init_Jack_Client()
@@ -73,6 +76,23 @@ void Init_Jack_PortFlags()
   rb_define_const(Jack_PortFlags, "IsPhysical",  INT2NUM(JackPortIsPhysical));
   rb_define_const(Jack_PortFlags, "CanMonitor",  INT2NUM(JackPortCanMonitor));
   rb_define_const(Jack_PortFlags, "IsTerminal",  INT2NUM(JackPortIsTerminal));
+}
+
+void Init_Jack_Status()
+{
+  rb_define_const(Jack_Status, "Failure",        INT2NUM(JackFailure));
+  rb_define_const(Jack_Status, "InvalidOption",  INT2NUM(JackInvalidOption));
+  rb_define_const(Jack_Status, "NameNotUnique",  INT2NUM(JackNameNotUnique));
+  rb_define_const(Jack_Status, "ServerStarted",  INT2NUM(JackServerStarted));
+  rb_define_const(Jack_Status, "ServerFailed",   INT2NUM(JackServerFailed));
+  rb_define_const(Jack_Status, "ServerError",    INT2NUM(JackServerError));
+  rb_define_const(Jack_Status, "NoSuchClient",   INT2NUM(JackNoSuchClient));
+  rb_define_const(Jack_Status, "LoadFailure",    INT2NUM(JackLoadFailure));
+  rb_define_const(Jack_Status, "InitFailure",    INT2NUM(JackInitFailure));
+  rb_define_const(Jack_Status, "ShmFailure",     INT2NUM(JackShmFailure));
+  rb_define_const(Jack_Status, "VersionError",   INT2NUM(JackVersionError));
+  rb_define_const(Jack_Status, "BackendError",   INT2NUM(JackBackendError));
+  rb_define_const(Jack_Status, "ClientZombie",   INT2NUM(JackClientZombie));
 }
 
 ///
