@@ -1,6 +1,6 @@
 require 'seqr'
 
-client = Seqr::Ext::JackClient.new
+client = Seqr::Jack::Client.new
 
 p client
 sleep 2
