@@ -30,6 +30,9 @@ VALUE Jack_Client_m_activate   (VALUE self);
 VALUE Jack_Client_m_deactivate (VALUE self);
 VALUE Jack_Client_m_name(VALUE self);
 
+
+VALUE Jack_StatusError_m_initialize (int argc, VALUE* argv, VALUE self);
+
 ///
 // Module/Class Initialization
 
@@ -68,7 +71,6 @@ void Init_Jack()
 
 void Init_Jack_Client()
 {
-  // rb_define_alloc_func(Jack_Client, Jack_Client_k_alloc);
   rb_define_method(Jack_Client, "initialize",
                    Jack_Client_m_initialize,  -1);
   rb_define_method(Jack_Client, "activate",
@@ -123,7 +125,8 @@ void Init_Jack_Error()
 
 void Init_Jack_StatusError()
 {
-  
+  rb_define_method(Jack_StatusError, "initialize",
+                   Jack_StatusError_m_initialize,  -1);
 }
 
 ///
@@ -194,4 +197,25 @@ VALUE Jack_Client_m_deactivate(VALUE self)
 VALUE Jack_Client_m_name(VALUE self)
 {
   return rb_str_new2(jack_get_client_name(Jack_Client_ptr(self)));
+}
+
+
+VALUE Jack_StatusError_m_initialize(int argc, VALUE* argv, VALUE self)
+{
+  jack_status_t status;
+  
+  // Accept status bitflags as optional second argument
+  status = (argc >= 2) ? NUM2INT(argv[1]) : 0;
+  
+  // Pass first argument to super if it is there
+  rb_call_super((argc >= 1), argv);
+  
+  // Retain status and generate accessors
+  if(status)
+  {
+    rb_iv_set(self, "@status", argv[1]);
+    rb_define_attr(rb_class_of(self), "status", 1, 0);
+  }
+  
+  return self;
 }
