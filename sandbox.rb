@@ -1,4 +1,8 @@
 require 'seqr'
 
-p Seqr::Ext::JackClient
-p Seqr::Ext::JackClient.new.instance_variable_get :@initialized
+client = Seqr::Ext::JackClient.new
+
+p client
+sleep 2
+client.close
+p client

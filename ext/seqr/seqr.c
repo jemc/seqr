@@ -10,27 +10,22 @@ VALUE Seqr           = Qnil;
     VALUE JackClient = Qnil;
 
 
-void Init_seqr();
+jack_client_t* the_client;
 
-
-VALUE some_free(VALUE self)
-{
-  
-  return self;
-}
 
 VALUE JackClient_m_initialize(VALUE self)
 {
-  jack_client_t* the_client;
-  int the_int;
-  
   the_client = jack_client_open("dog", JackNullOption, NULL);
-  sleep(10);
-  
-  the_int = jack_client_close((jack_client_t *)the_client);
-  rb_iv_set(self, "@initialized", INT2NUM(the_int));
+  rb_iv_set(self, "@open", Qtrue);
   return self;
 }
+
+VALUE JackClient_m_close(VALUE self)
+{
+  rb_iv_set(self, "@open", Qfalse);
+  return INT2NUM(jack_client_close((jack_client_t *)the_client));
+}
+
 
 // VALUE m_JEMC_CExample_version(VALUE self)
 // {
@@ -51,6 +46,8 @@ void Init_seqr()
   
   rb_define_method(JackClient, "initialize",
                    JackClient_m_initialize, 0);
+  rb_define_method(JackClient, "close",
+                   JackClient_m_close, 0);
   // rb_define_singleton_method(JEMC_CExample,"version",
   //                          m_JEMC_CExample_version, 0);
   // rb_define_singleton_method(JEMC_CExample,"passthru",
