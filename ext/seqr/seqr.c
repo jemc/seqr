@@ -5,10 +5,11 @@
 /// 
 // Module/Class Hierarchy
 
-/* c-extension: seqr */        void Init_seqr();
-VALUE Seqr            = Qnil;  void Init_Seqr();
-  VALUE Jack          = Qnil;  void Init_Jack();
-    VALUE Jack_Client = Qnil;  void Init_Jack_Client();
+/* c-extension: seqr */         void Init_seqr();
+VALUE Seqr             = Qnil;  void Init_Seqr();
+  VALUE Jack           = Qnil;  void Init_Jack();
+    VALUE Jack_Client  = Qnil;  void Init_Jack_Client();
+    VALUE Jack_Options = Qnil;  void Init_Jack_Options();
 
 ///
 // Function Declarations
@@ -35,8 +36,10 @@ void Init_Seqr()
 
 void Init_Jack()
 {
-  Jack_Client = rb_define_class_under(Jack, "Client", rb_cObject);
+  Jack_Client  = rb_define_class_under (Jack, "Client", rb_cObject);
+  Jack_Options = rb_define_module_under(Jack, "Options");
   Init_Jack_Client();
+  Init_Jack_Options();
 }
 
 void Init_Jack_Client()
@@ -46,6 +49,17 @@ void Init_Jack_Client()
                    Jack_Client_m_initialize, 0);
   rb_define_method(Jack_Client, "close",
                    Jack_Client_m_close, 0);
+}
+
+void Init_Jack_Options()
+{
+  rb_define_const(Jack_Options, "NullOption",    INT2NUM(JackNullOption));
+  rb_define_const(Jack_Options, "NoStartServer", INT2NUM(JackNoStartServer));
+  rb_define_const(Jack_Options, "UseExactName",  INT2NUM(JackUseExactName));
+  rb_define_const(Jack_Options, "ServerName",    INT2NUM(JackServerName));
+  rb_define_const(Jack_Options, "LoadName",      INT2NUM(JackLoadName));
+  rb_define_const(Jack_Options, "LoadInit",      INT2NUM(JackLoadInit));
+  rb_define_const(Jack_Options, "SessionID",     INT2NUM(JackSessionID));
 }
 
 ///
