@@ -38,6 +38,9 @@ VALUE JackClient_m_initialize(VALUE self)
 
 VALUE JackClient_m_close(VALUE self)
 {
+  if(rb_iv_get(self, "@open")==Qfalse)
+    rb_raise(rb_eRuntimeError, "Cannot close. The client is not open.");
+  
   rb_iv_set(self, "@open", Qfalse);
   return INT2NUM(jack_client_close(JackClient_get(self)));
 }
