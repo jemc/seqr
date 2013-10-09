@@ -16,11 +16,12 @@ VALUE Seqr               = Qnil;  void Init_Seqr();
 ///
 // Function Declarations
 
-static jack_client_t* Jack_Client_get(VALUE self);
+static jack_client_t* Jack_Client_get (VALUE self);
+static void Jack_Client_free(jack_client_t* ptr);
+
 VALUE Jack_Client_k_alloc(VALUE klass);
 
 VALUE Jack_Client_m_initialize (VALUE self);
-VALUE Jack_Client_m_close      (VALUE self);
 VALUE Jack_Client_m_activate   (VALUE self);
 VALUE Jack_Client_m_deactivate (VALUE self);
 
@@ -57,8 +58,6 @@ void Init_Jack_Client()
   rb_define_alloc_func(Jack_Client, Jack_Client_k_alloc);
   rb_define_method(Jack_Client, "initialize",
                    Jack_Client_m_initialize, 0);
-  rb_define_method(Jack_Client, "close",
-                   Jack_Client_m_close, 0);
   rb_define_method(Jack_Client, "activate",
                    Jack_Client_m_activate, 0);
   rb_define_method(Jack_Client, "deactivate",
@@ -112,26 +111,21 @@ static jack_client_t* Jack_Client_get(VALUE self)
   return ptr;
 }
 
+static void Jack_Client_free(jack_client_t* ptr)
+{
+  jack_client_close(ptr);
+}
+
 VALUE Jack_Client_k_alloc(VALUE klass)
 {
   jack_client_t* ptr;
   ptr = jack_client_open("dog", JackNullOption, NULL);
-  return Data_Wrap_Struct(klass, NULL, NULL, ptr);
+  return Data_Wrap_Struct(klass, NULL, Jack_Client_free, ptr);
 }
 
 VALUE Jack_Client_m_initialize(VALUE self)
 {
-  rb_iv_set(self, "@open", Qtrue);
   return self;
-}
-
-VALUE Jack_Client_m_close(VALUE self)
-{
-  if(rb_iv_get(self, "@open")==Qfalse)
-    rb_raise(rb_eRuntimeError, "Cannot close. The client is not open.");
-  
-  rb_iv_set(self, "@open", Qfalse);
-  return INT2NUM(jack_client_close(Jack_Client_get(self)));
 }
 
 VALUE Jack_Client_m_activate(VALUE self)
