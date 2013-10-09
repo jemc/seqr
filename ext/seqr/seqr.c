@@ -17,6 +17,7 @@ VALUE Seqr                 = Qnil;  void Init_Seqr();
     VALUE Jack_Error       = Qnil;  void Init_Jack_Error();
     VALUE Jack_StatusError = Qnil;  void Init_Jack_StatusError();
 
+
 ///
 // Function Declarations
 
@@ -31,7 +32,9 @@ VALUE Jack_Client_m_deactivate (VALUE self);
 VALUE Jack_Client_m_name(VALUE self);
 
 
+void Jack_StatusError_raise(const char* str, int status);
 VALUE Jack_StatusError_m_initialize (int argc, VALUE* argv, VALUE self);
+
 
 ///
 // Module/Class Initialization
@@ -175,7 +178,7 @@ VALUE Jack_Client_m_initialize(int argc, VALUE* argv, VALUE self)
   // Open the client
   ptr = jack_client_open(name, options, &status);
   if(ptr == NULL)
-    rb_raise(Jack_StatusError, "Failed to open the Jack::Client");
+    Jack_StatusError_raise("Failed to open the Jack::Client", status);
   
   // Save the reference to the client in the @ptr ivar
   rb_iv_set(self, "@ptr", 
@@ -199,6 +202,15 @@ VALUE Jack_Client_m_name(VALUE self)
   return rb_str_new2(jack_get_client_name(Jack_Client_ptr(self)));
 }
 
+
+
+void Jack_StatusError_raise(const char* str, int status)
+{
+  VALUE args[2];
+  args[0] = rb_str_new2(str);
+  args[1] = INT2NUM(status);
+  rb_exc_raise(rb_class_new_instance(sizeof(args), args, Jack_StatusError));
+}
 
 VALUE Jack_StatusError_m_initialize(int argc, VALUE* argv, VALUE self)
 {
