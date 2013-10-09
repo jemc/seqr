@@ -5,13 +5,17 @@
 /// 
 // Module/Class Hierarchy
 
-/* c-extension: seqr */           void Init_seqr();
-VALUE Seqr               = Qnil;  void Init_Seqr();
-  VALUE Jack             = Qnil;  void Init_Jack();
-    VALUE Jack_Client    = Qnil;  void Init_Jack_Client();
-    VALUE Jack_Options   = Qnil;  void Init_Jack_Options();
-    VALUE Jack_PortFlags = Qnil;  void Init_Jack_PortFlags();
-    VALUE Jack_Status    = Qnil;  void Init_Jack_Status();
+/* c-extension: seqr */             void Init_seqr();
+VALUE Seqr                 = Qnil;  void Init_Seqr();
+  VALUE Jack               = Qnil;  void Init_Jack();
+    VALUE Jack_Client      = Qnil;  void Init_Jack_Client();
+    
+    VALUE Jack_Options     = Qnil;  void Init_Jack_Options();
+    VALUE Jack_PortFlags   = Qnil;  void Init_Jack_PortFlags();
+    VALUE Jack_Status      = Qnil;  void Init_Jack_Status();
+    
+    VALUE Jack_Error       = Qnil;  void Init_Jack_Error();
+    VALUE Jack_StatusError = Qnil;  void Init_Jack_StatusError();
 
 ///
 // Function Declarations
@@ -43,15 +47,23 @@ void Init_Seqr()
 
 void Init_Jack()
 {
-  Jack_Client    = rb_define_class_under (Jack, "Client", rb_cObject);
+  Jack_Client      = rb_define_class_under (Jack, "Client", 
+                                            rb_cObject);
   Init_Jack_Client();
   
-  Jack_Options   = rb_define_module_under(Jack, "Options");
-  Jack_PortFlags = rb_define_module_under(Jack, "PortFlags");
-  Jack_Status    = rb_define_module_under(Jack, "Status");
+  Jack_Options     = rb_define_module_under(Jack, "Options");
+  Jack_PortFlags   = rb_define_module_under(Jack, "PortFlags");
+  Jack_Status      = rb_define_module_under(Jack, "Status");
   Init_Jack_Options();
   Init_Jack_PortFlags();
   Init_Jack_Status();
+  
+  Jack_Error       = rb_define_class_under(Jack, "Error", 
+                                           rb_eRuntimeError);
+  Jack_StatusError = rb_define_class_under(Jack, "StatusError", 
+                                           Jack_Error);
+  Init_Jack_Error();
+  Init_Jack_StatusError();
 }
 
 void Init_Jack_Client()
@@ -104,6 +116,16 @@ void Init_Jack_Status()
   rb_define_const(Jack_Status, "ClientZombie",   INT2NUM(JackClientZombie));
 }
 
+void Init_Jack_Error()
+{
+  
+}
+
+void Init_Jack_StatusError()
+{
+  
+}
+
 ///
 // Function Implementations
 
@@ -120,7 +142,7 @@ static jack_client_t* Jack_Client_ptr(VALUE self)
   }
   else
   {
-    rb_raise(rb_eRuntimeError, "Illegal action on dead Jack::Client");
+    rb_raise(Jack_Error, "Illegal action on dead Jack::Client");
     return NULL;
   }
 }
@@ -152,7 +174,7 @@ VALUE Jack_Client_m_initialize(int argc, VALUE* argv, VALUE self)
   // Open the client
   ptr = jack_client_open(name, options, &status);
   if(ptr == NULL)
-    rb_raise(rb_eRuntimeError, "Failed to open the Jack::Client");
+    rb_raise(Jack_StatusError, "Failed to open the Jack::Client");
   
   // Save the reference to the client in the @ptr ivar
   rb_iv_set(self, "@ptr", 
