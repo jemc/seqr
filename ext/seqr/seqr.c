@@ -5,9 +5,10 @@
 /// 
 // Module/Class Hierarchy
 
-VALUE Seqr            = Qnil;
-  VALUE Jack          = Qnil;
-    VALUE Jack_Client = Qnil;
+/* c-extension: seqr */        void Init_seqr();
+VALUE Seqr            = Qnil;  void Init_Seqr();
+  VALUE Jack          = Qnil;  void Init_Jack();
+    VALUE Jack_Client = Qnil;  void Init_Jack_Client();
 
 ///
 // Function Declarations
@@ -22,10 +23,24 @@ VALUE Jack_Client_m_close(VALUE self);
 
 void Init_seqr()
 {
-  Seqr       = rb_define_module("Seqr");
-  Jack       = rb_define_module_under(Seqr, "Jack");
+  Seqr = rb_define_module("Seqr");
+  Init_Seqr();
+}
+
+void Init_Seqr()
+{
+  Jack = rb_define_module_under(Seqr, "Jack");
+  Init_Jack();
+}
+
+void Init_Jack()
+{
   Jack_Client = rb_define_class_under(Jack, "Client", rb_cObject);
-  
+  Init_Jack_Client();
+}
+
+void Init_Jack_Client()
+{
   rb_define_alloc_func(Jack_Client, Jack_Client_k_alloc);
   rb_define_method(Jack_Client, "initialize",
                    Jack_Client_m_initialize, 0);
