@@ -135,16 +135,14 @@ static jack_client_t* Jack_Client_ptr(VALUE self)
   VALUE ptr_obj;
   
   ptr_obj = rb_iv_get(self, "@ptr");
-  if(ptr_obj != Qnil)
-  {
-    Data_Get_Struct(ptr_obj, jack_client_t, ptr);
-    return ptr;
-  }
-  else
+  if(ptr_obj == Qnil)
   {
     rb_raise(Jack_Error, "Illegal action on dead Jack::Client");
     return NULL;
   }
+
+  Data_Get_Struct(ptr_obj, jack_client_t, ptr);
+  return ptr;
 }
 
 static void Jack_Client_ptr_free(jack_client_t* ptr)
