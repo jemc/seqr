@@ -2,17 +2,39 @@
 #include <ruby.h>
 #include <jack/jack.h>
 
+/// 
+// Module/Class Hierarchy
 
 VALUE Seqr            = Qnil;
   VALUE Jack          = Qnil;
     VALUE Jack_Client = Qnil;
 
+///
+// Function Declarations
 
 static jack_client_t* Jack_Client_get(VALUE self);
 VALUE Jack_Client_k_alloc(VALUE klass);
 VALUE Jack_Client_m_initialize(VALUE self);
 VALUE Jack_Client_m_close(VALUE self);
 
+///
+// Module/Class Initialization
+
+void Init_seqr()
+{
+  Seqr       = rb_define_module("Seqr");
+  Jack       = rb_define_module_under(Seqr, "Jack");
+  Jack_Client = rb_define_class_under(Jack, "Client", rb_cObject);
+  
+  rb_define_alloc_func(Jack_Client, Jack_Client_k_alloc);
+  rb_define_method(Jack_Client, "initialize",
+                   Jack_Client_m_initialize, 0);
+  rb_define_method(Jack_Client, "close",
+                   Jack_Client_m_close, 0);
+}
+
+///
+// Function Implementations
 
 static jack_client_t* Jack_Client_get(VALUE self)
 {
@@ -41,18 +63,4 @@ VALUE Jack_Client_m_close(VALUE self)
   
   rb_iv_set(self, "@open", Qfalse);
   return INT2NUM(jack_client_close(Jack_Client_get(self)));
-}
-
-
-void Init_seqr()
-{
-  Seqr       = rb_define_module("Seqr");
-  Jack       = rb_define_module_under(Seqr, "Jack");
-  Jack_Client = rb_define_class_under(Jack, "Client", rb_cObject);
-  
-  rb_define_alloc_func(Jack_Client, Jack_Client_k_alloc);
-  rb_define_method(Jack_Client, "initialize",
-                   Jack_Client_m_initialize, 0);
-  rb_define_method(Jack_Client, "close",
-                   Jack_Client_m_close, 0);
 }
