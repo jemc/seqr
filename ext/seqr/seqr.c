@@ -53,8 +53,7 @@ void Init_Seqr()
 
 void Init_Jack()
 {
-  Jack_Client      = rb_define_class_under (Jack, "Client", 
-                                            rb_cObject);
+  Jack_Client      = rb_define_class_under (Jack, "Client", rb_cObject);
   Init_Jack_Client();
   
   Jack_Options     = rb_define_module_under(Jack, "Options");
@@ -64,10 +63,8 @@ void Init_Jack()
   Init_Jack_PortFlags();
   Init_Jack_Status();
   
-  Jack_Error       = rb_define_class_under(Jack, "Error", 
-                                           rb_eRuntimeError);
-  Jack_StatusError = rb_define_class_under(Jack, "StatusError", 
-                                           Jack_Error);
+  Jack_Error       = rb_define_class_under(Jack, "Error", rb_eRuntimeError);
+  Jack_StatusError = rb_define_class_under(Jack, "StatusError", Jack_Error);
   Init_Jack_Error();
   Init_Jack_StatusError();
 }
