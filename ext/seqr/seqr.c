@@ -24,6 +24,7 @@ VALUE Jack_Client_k_alloc(VALUE klass);
 VALUE Jack_Client_m_initialize (int argc, VALUE* argv, VALUE self);
 VALUE Jack_Client_m_activate   (VALUE self);
 VALUE Jack_Client_m_deactivate (VALUE self);
+VALUE Jack_Client_m_name(VALUE self);
 
 ///
 // Module/Class Initialization
@@ -62,6 +63,8 @@ void Init_Jack_Client()
                    Jack_Client_m_activate,    0);
   rb_define_method(Jack_Client, "deactivate",
                    Jack_Client_m_deactivate,  0);
+  rb_define_method(Jack_Client, "name",
+                   Jack_Client_m_name,        0);
 }
 
 void Init_Jack_Options()
@@ -152,4 +155,9 @@ VALUE Jack_Client_m_activate(VALUE self)
 VALUE Jack_Client_m_deactivate(VALUE self)
 {
   return INT2NUM(jack_deactivate(Jack_Client_ptr(self)));
+}
+
+VALUE Jack_Client_m_name(VALUE self)
+{
+  return rb_str_new2(jack_get_client_name(Jack_Client_ptr(self)));
 }
