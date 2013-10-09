@@ -5,11 +5,12 @@
 /// 
 // Module/Class Hierarchy
 
-/* c-extension: seqr */         void Init_seqr();
-VALUE Seqr             = Qnil;  void Init_Seqr();
-  VALUE Jack           = Qnil;  void Init_Jack();
-    VALUE Jack_Client  = Qnil;  void Init_Jack_Client();
-    VALUE Jack_Options = Qnil;  void Init_Jack_Options();
+/* c-extension: seqr */           void Init_seqr();
+VALUE Seqr               = Qnil;  void Init_Seqr();
+  VALUE Jack             = Qnil;  void Init_Jack();
+    VALUE Jack_Client    = Qnil;  void Init_Jack_Client();
+    VALUE Jack_Options   = Qnil;  void Init_Jack_Options();
+    VALUE Jack_PortFlags = Qnil;  void Init_Jack_PortFlags();
 
 ///
 // Function Declarations
@@ -36,10 +37,13 @@ void Init_Seqr()
 
 void Init_Jack()
 {
-  Jack_Client  = rb_define_class_under (Jack, "Client", rb_cObject);
-  Jack_Options = rb_define_module_under(Jack, "Options");
+  Jack_Client    = rb_define_class_under (Jack, "Client", rb_cObject);
   Init_Jack_Client();
+  
+  Jack_Options   = rb_define_module_under(Jack, "Options");
+  Jack_PortFlags = rb_define_module_under(Jack, "PortFlags");
   Init_Jack_Options();
+  Init_Jack_PortFlags();
 }
 
 void Init_Jack_Client()
@@ -60,6 +64,16 @@ void Init_Jack_Options()
   rb_define_const(Jack_Options, "LoadName",      INT2NUM(JackLoadName));
   rb_define_const(Jack_Options, "LoadInit",      INT2NUM(JackLoadInit));
   rb_define_const(Jack_Options, "SessionID",     INT2NUM(JackSessionID));
+}
+
+void Init_Jack_PortFlags()
+{
+  rb_define_const(Jack_PortFlags, "IsInput",     INT2NUM(JackPortIsInput));
+  rb_define_const(Jack_PortFlags, "IsOutput",    INT2NUM(JackPortIsOutput));
+  rb_define_const(Jack_PortFlags, "IsPhysical",  INT2NUM(JackPortIsPhysical));
+  rb_define_const(Jack_PortFlags, "CanMonitor",  INT2NUM(JackPortCanMonitor));
+  rb_define_const(Jack_PortFlags, "IsTerminal",  INT2NUM(JackPortIsTerminal));
+  rb_define_const(Jack_PortFlags, "IsTerminal",  INT2NUM(JackPortIsTerminal));
 }
 
 ///
