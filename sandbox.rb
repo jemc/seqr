@@ -1,7 +1,5 @@
 require 'seqr'
 include Seqr
 
-client = Jack::Client.new
-
-client.activate
-client.deactivate
+p Jack::Client.new
+p Jack::Client.new 'dog', Jack::Options::NullOption

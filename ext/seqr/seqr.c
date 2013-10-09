@@ -16,12 +16,12 @@ VALUE Seqr               = Qnil;  void Init_Seqr();
 ///
 // Function Declarations
 
-static jack_client_t* Jack_Client_get (VALUE self);
-static void Jack_Client_free(jack_client_t* ptr);
+static jack_client_t* Jack_Client_ptr(VALUE self);
+static void Jack_Client_ptr_free(jack_client_t* ptr);
 
 VALUE Jack_Client_k_alloc(VALUE klass);
 
-VALUE Jack_Client_m_initialize (VALUE self);
+VALUE Jack_Client_m_initialize (int argc, VALUE* argv, VALUE self);
 VALUE Jack_Client_m_activate   (VALUE self);
 VALUE Jack_Client_m_deactivate (VALUE self);
 
@@ -55,13 +55,13 @@ void Init_Jack()
 
 void Init_Jack_Client()
 {
-  rb_define_alloc_func(Jack_Client, Jack_Client_k_alloc);
+  // rb_define_alloc_func(Jack_Client, Jack_Client_k_alloc);
   rb_define_method(Jack_Client, "initialize",
-                   Jack_Client_m_initialize, 0);
+                   Jack_Client_m_initialize,  -1);
   rb_define_method(Jack_Client, "activate",
-                   Jack_Client_m_activate, 0);
+                   Jack_Client_m_activate,    0);
   rb_define_method(Jack_Client, "deactivate",
-                   Jack_Client_m_deactivate, 0);
+                   Jack_Client_m_deactivate,  0);
 }
 
 void Init_Jack_Options()
@@ -104,36 +104,52 @@ void Init_Jack_Status()
 ///
 // Function Implementations
 
-static jack_client_t* Jack_Client_get(VALUE self)
+static jack_client_t* Jack_Client_ptr(VALUE self)
 {
   jack_client_t* ptr;
-  Data_Get_Struct(self, jack_client_t, ptr);
+  Data_Get_Struct(rb_iv_get(self, "@ptr"), jack_client_t, ptr);
   return ptr;
 }
 
-static void Jack_Client_free(jack_client_t* ptr)
+static void Jack_Client_ptr_free(jack_client_t* ptr)
 {
   jack_client_close(ptr);
 }
 
-VALUE Jack_Client_k_alloc(VALUE klass)
+VALUE Jack_Client_m_initialize(int argc, VALUE* argv, VALUE self)
 {
   jack_client_t* ptr;
-  ptr = jack_client_open("dog", JackNullOption, NULL);
-  return Data_Wrap_Struct(klass, NULL, Jack_Client_free, ptr);
-}
-
-VALUE Jack_Client_m_initialize(VALUE self)
-{
+  char* name;
+  int options;
+  
+  // Accept custom name as first argument
+  if(argc >= 1)
+    name = StringValueCStr(argv[0]);
+  else
+    name = (char*)"Jack::Client"; // default name
+  
+  // Accept custom options as second argument
+  if(argc >= 2)
+    options = NUM2INT(argv[1]);
+  else
+    options = JackNullOption; // default options
+  
+  // Open the client
+  ptr = jack_client_open(name, options, NULL);
+  
+  // Save the reference to the client in the @ptr ivar
+  rb_iv_set(self, "@ptr", 
+    Data_Wrap_Struct(rb_cObject, NULL, Jack_Client_ptr_free, ptr));
+  
   return self;
 }
 
 VALUE Jack_Client_m_activate(VALUE self)
 {
-  return jack_activate(Jack_Client_get(self));
+  return INT2NUM(jack_activate(Jack_Client_ptr(self)));
 }
 
 VALUE Jack_Client_m_deactivate(VALUE self)
 {
-  return jack_deactivate(Jack_Client_get(self));
+  return INT2NUM(jack_deactivate(Jack_Client_ptr(self)));
 }
