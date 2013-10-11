@@ -6,7 +6,7 @@
 /// 
 // Module/Class Hierarchy
 
-/* c-extension: seqr */               void Init_seqr();
+/* c-extension: seqr */  extern "C" void Init_seqr();
 VALUE Seqr                 = Qnil;  void Init_Seqr();
   VALUE Jack               = Qnil;  void Init_Jack();
     VALUE Jack_Client      = Qnil;  void Init_Jack_Client();
@@ -24,13 +24,13 @@ VALUE Seqr                 = Qnil;  void Init_Seqr();
 
 jack_client_t* Jack_Client_ptr(VALUE self);
 void Jack_Client_ptr_free(jack_client_t* ptr);
-VALUE Jack_Client_k_alloc(VALUE klass);
-VALUE Jack_Client_m_initialize (int argc, VALUE* argv, VALUE self);
-VALUE Jack_Client_m_activate   (VALUE self);
-VALUE Jack_Client_m_deactivate (VALUE self);
-VALUE Jack_Client_m_name(VALUE self);
+extern "C" VALUE Jack_Client_k_alloc(VALUE klass);
+extern "C" VALUE Jack_Client_m_open(VALUE self, VALUE _options, VALUE _name);
+extern "C" VALUE Jack_Client_m_activate   (VALUE self);
+extern "C" VALUE Jack_Client_m_deactivate (VALUE self);
+extern "C" VALUE Jack_Client_m_name(VALUE self);
 void Jack_StatusError_raise(const char* str, int status);
-VALUE Jack_StatusError_m_initialize (int argc, VALUE* argv, VALUE self);
+extern "C" VALUE Jack_StatusError_m_initialize (int argc, VALUE* argv, VALUE self);
 
 
 ///
@@ -68,8 +68,8 @@ void Init_Jack()
 
 void Init_Jack_Client()
 {
-  rb_define_method(Jack_Client, "initialize",
-  RUBY_METHOD_FUNC(Jack_Client_m_initialize),  -1);
+  rb_define_method(Jack_Client, "open",
+  RUBY_METHOD_FUNC(Jack_Client_m_open),        2);
   rb_define_method(Jack_Client, "activate",
   RUBY_METHOD_FUNC(Jack_Client_m_activate),    0);
   rb_define_method(Jack_Client, "deactivate",
@@ -150,41 +150,32 @@ void Jack_Client_ptr_free(jack_client_t* ptr)
   jack_client_close(ptr);
 }
 
-VALUE Jack_Client_m_initialize(int argc, VALUE* argv, VALUE self)
+extern "C" VALUE Jack_Client_m_open(VALUE self, VALUE _name, VALUE _options)
 {
   jack_client_t* ptr;
-  char*          name;
-  jack_options_t options;
   jack_status_t  status;
   
-  VALUE _options, _name;
+  ptr = jack_client_open(StringValueCStr(_name), 
+                         (jack_options_t)NUM2INT(_options), 
+                         &status);
   
-  rb_scan_args(argc, argv, "02", &_name, &_options);
-  name    = NIL_P(_name))    ? "Jack::Client" : StringValueCStr(_name);
-  options = NIL_P(_options)) ? JackNullOption : (jack_options_t)NUM2INT(_options);
-  
-  ptr = jack_client_open(name, options, &status);
-  if(ptr == NULL)
-    Jack_StatusError_raise("Failed to open the Jack::Client", status);
-  
-  // Save the reference to the client in the @ptr ivar
   rb_iv_set(self, "@ptr", 
     Data_Wrap_Struct(rb_cObject, NULL, Jack_Client_ptr_free, ptr));
   
-  return self;
+  return INT2FIX(status);
 }
 
-VALUE Jack_Client_m_activate(VALUE self)
+extern "C" VALUE Jack_Client_m_activate(VALUE self)
 {
   return INT2NUM(jack_activate(Jack_Client_ptr(self)));
 }
 
-VALUE Jack_Client_m_deactivate(VALUE self)
+extern "C" VALUE Jack_Client_m_deactivate(VALUE self)
 {
   return INT2NUM(jack_deactivate(Jack_Client_ptr(self)));
 }
 
-VALUE Jack_Client_m_name(VALUE self)
+extern "C" VALUE Jack_Client_m_name(VALUE self)
 {
   return rb_str_new2(jack_get_client_name(Jack_Client_ptr(self)));
 }
@@ -199,7 +190,7 @@ void Jack_StatusError_raise(const char* str, int status)
   rb_exc_raise(rb_class_new_instance(sizeof(args), args, Jack_StatusError));
 }
 
-VALUE Jack_StatusError_m_initialize(int argc, VALUE* argv, VALUE self)
+extern "C" VALUE Jack_StatusError_m_initialize(int argc, VALUE* argv, VALUE self)
 {
   jack_status_t status;
   
