@@ -14,9 +14,6 @@ VALUE Seqr                 = Qnil;  void Init_Seqr();
     VALUE Jack_Options     = Qnil;  void Init_Jack_Options();
     VALUE Jack_PortFlags   = Qnil;  void Init_Jack_PortFlags();
     VALUE Jack_Status      = Qnil;  void Init_Jack_Status();
-    
-    VALUE Jack_Error       = Qnil;  void Init_Jack_Error();
-    VALUE Jack_StatusError = Qnil;  void Init_Jack_StatusError();
 
 
 ///
@@ -29,8 +26,6 @@ extern "C" VALUE Jack_Client_m_open(VALUE self, VALUE _options, VALUE _name);
 extern "C" VALUE Jack_Client_m_activate   (VALUE self);
 extern "C" VALUE Jack_Client_m_deactivate (VALUE self);
 extern "C" VALUE Jack_Client_m_name(VALUE self);
-void Jack_StatusError_raise(const char* str, int status);
-extern "C" VALUE Jack_StatusError_m_initialize (int argc, VALUE* argv, VALUE self);
 
 
 ///
@@ -59,11 +54,6 @@ void Init_Jack()
   Init_Jack_Options();
   Init_Jack_PortFlags();
   Init_Jack_Status();
-  
-  Jack_Error       = rb_define_class_under(Jack, "Error", rb_eRuntimeError);
-  Jack_StatusError = rb_define_class_under(Jack, "StatusError", Jack_Error);
-  Init_Jack_Error();
-  Init_Jack_StatusError();
 }
 
 void Init_Jack_Client()
@@ -115,17 +105,6 @@ void Init_Jack_Status()
   rb_define_const(Jack_Status, "ClientZombie",   INT2NUM(JackClientZombie));
 }
 
-void Init_Jack_Error()
-{
-  
-}
-
-void Init_Jack_StatusError()
-{
-  rb_define_method(Jack_StatusError, "initialize",
-  RUBY_METHOD_FUNC(Jack_StatusError_m_initialize),  -1);
-}
-
 ///
 // Function Implementations
 
@@ -135,11 +114,6 @@ jack_client_t* Jack_Client_ptr(VALUE self)
   VALUE ptr_obj;
   
   ptr_obj = rb_iv_get(self, "@ptr");
-  if(ptr_obj == Qnil)
-  {
-    rb_raise(Jack_Error, "Illegal action on dead Jack::Client");
-    return NULL;
-  }
 
   Data_Get_Struct(ptr_obj, jack_client_t, ptr);
   return ptr;
@@ -178,34 +152,4 @@ extern "C" VALUE Jack_Client_m_deactivate(VALUE self)
 extern "C" VALUE Jack_Client_m_name(VALUE self)
 {
   return rb_str_new2(jack_get_client_name(Jack_Client_ptr(self)));
-}
-
-
-
-void Jack_StatusError_raise(const char* str, int status)
-{
-  VALUE args[2];
-  args[0] = rb_str_new2(str);
-  args[1] = INT2NUM(status);
-  rb_exc_raise(rb_class_new_instance(sizeof(args), args, Jack_StatusError));
-}
-
-extern "C" VALUE Jack_StatusError_m_initialize(int argc, VALUE* argv, VALUE self)
-{
-  jack_status_t status;
-  
-  // Accept status bitflags as optional second argument
-  status = (jack_status_t)((argc >= 2) ? NUM2INT(argv[1]) : 0);
-  
-  // Pass first argument to super if it is there
-  rb_call_super((argc >= 1), argv);
-  
-  // Retain status and generate accessors
-  if(status)
-  {
-    rb_iv_set(self, "@status", argv[1]);
-    rb_define_attr(rb_class_of(self), "status", 1, 0);
-  }
-  
-  return self;
 }
