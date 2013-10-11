@@ -6,14 +6,13 @@
 /// 
 // Module/Class Hierarchy
 
-/* c-extension: seqr */  extern "C" void Init_seqr();
-VALUE Seqr                 = Qnil;  void Init_Seqr();
-  VALUE Jack               = Qnil;  void Init_Jack();
-    VALUE Jack_Client      = Qnil;  void Init_Jack_Client();
-    
-    VALUE Jack_Options     = Qnil;  void Init_Jack_Options();
-    VALUE Jack_PortFlags   = Qnil;  void Init_Jack_PortFlags();
-    VALUE Jack_Status      = Qnil;  void Init_Jack_Status();
+/* c-extension */      extern "C" void Init_seqr();
+VALUE Jack               = Qnil;  void Init_Jack();
+  VALUE Jack_Client      = Qnil;  void Init_Jack_Client();
+  
+  VALUE Jack_Options     = Qnil;  void Init_Jack_Options();
+  VALUE Jack_PortFlags   = Qnil;  void Init_Jack_PortFlags();
+  VALUE Jack_Status      = Qnil;  void Init_Jack_Status();
 
 
 ///
@@ -33,13 +32,7 @@ extern "C" VALUE Jack_Client_m_name(VALUE self);
 
 void Init_seqr()
 {
-  Seqr = rb_define_module("Seqr");
-  Init_Seqr();
-}
-
-void Init_Seqr()
-{
-  Jack = rb_define_module_under(Seqr, "Jack");
+  Jack = rb_eval_string("Seqr::Jack");
   Init_Jack();
 }
 

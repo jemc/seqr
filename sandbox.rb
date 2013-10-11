@@ -35,4 +35,4 @@ include Seqr
 p Jack::Client.new
 p Jack::Client.new('dog')
 sleep 0.5
-p Jack::Client.new('dog',Jack::Options::UseExactName)
+p Jack::Client.new('dog', Jack::Options::UseExactName)
