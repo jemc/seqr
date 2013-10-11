@@ -2,56 +2,53 @@
 #include <ruby.h>
 #include <jack/jack.h>
 
+
 /// 
 // Module/Class Hierarchy
 
-/* c-extension: seqr */             void Init_seqr();
-VALUE Seqr                 = Qnil;  void Init_Seqr();
-  VALUE Jack               = Qnil;  void Init_Jack();
-    VALUE Jack_Client      = Qnil;  void Init_Jack_Client();
+/* c-extension: seqr */             extern "C" void Init_seqr();
+VALUE Seqr                 = Qnil;  extern "C" void Init_Seqr();
+  VALUE Jack               = Qnil;  extern "C" void Init_Jack();
+    VALUE Jack_Client      = Qnil;  extern "C" void Init_Jack_Client();
     
-    VALUE Jack_Options     = Qnil;  void Init_Jack_Options();
-    VALUE Jack_PortFlags   = Qnil;  void Init_Jack_PortFlags();
-    VALUE Jack_Status      = Qnil;  void Init_Jack_Status();
+    VALUE Jack_Options     = Qnil;  extern "C" void Init_Jack_Options();
+    VALUE Jack_PortFlags   = Qnil;  extern "C" void Init_Jack_PortFlags();
+    VALUE Jack_Status      = Qnil;  extern "C" void Init_Jack_Status();
     
-    VALUE Jack_Error       = Qnil;  void Init_Jack_Error();
-    VALUE Jack_StatusError = Qnil;  void Init_Jack_StatusError();
+    VALUE Jack_Error       = Qnil;  extern "C" void Init_Jack_Error();
+    VALUE Jack_StatusError = Qnil;  extern "C" void Init_Jack_StatusError();
 
 
 ///
 // Function Declarations
 
-static jack_client_t* Jack_Client_ptr(VALUE self);
-static void Jack_Client_ptr_free(jack_client_t* ptr);
-
-VALUE Jack_Client_k_alloc(VALUE klass);
-
-VALUE Jack_Client_m_initialize (int argc, VALUE* argv, VALUE self);
-VALUE Jack_Client_m_activate   (VALUE self);
-VALUE Jack_Client_m_deactivate (VALUE self);
-VALUE Jack_Client_m_name(VALUE self);
-
-
-void Jack_StatusError_raise(const char* str, int status);
-VALUE Jack_StatusError_m_initialize (int argc, VALUE* argv, VALUE self);
+extern "C" jack_client_t* Jack_Client_ptr(VALUE self);
+extern "C" void Jack_Client_ptr_free(jack_client_t* ptr);
+extern "C" VALUE Jack_Client_k_alloc(VALUE klass);
+extern "C" VALUE Jack_Client_m_initialize (int argc, VALUE* argv, VALUE self);
+extern "C" VALUE Jack_Client_m_activate   (VALUE self);
+extern "C" VALUE Jack_Client_m_deactivate (VALUE self);
+extern "C" VALUE Jack_Client_m_name(VALUE self);
+extern "C" void Jack_StatusError_raise(const char* str, int status);
+extern "C" VALUE Jack_StatusError_m_initialize (int argc, VALUE* argv, VALUE self);
 
 
 ///
 // Module/Class Initialization
 
-void Init_seqr()
+extern "C" void Init_seqr()
 {
   Seqr = rb_define_module("Seqr");
   Init_Seqr();
 }
 
-void Init_Seqr()
+extern "C" void Init_Seqr()
 {
   Jack = rb_define_module_under(Seqr, "Jack");
   Init_Jack();
 }
 
-void Init_Jack()
+extern "C" void Init_Jack()
 {
   Jack_Client      = rb_define_class_under (Jack, "Client", rb_cObject);
   Init_Jack_Client();
@@ -69,19 +66,19 @@ void Init_Jack()
   Init_Jack_StatusError();
 }
 
-void Init_Jack_Client()
+extern "C" void Init_Jack_Client()
 {
   rb_define_method(Jack_Client, "initialize",
-                   Jack_Client_m_initialize,  -1);
+  RUBY_METHOD_FUNC(Jack_Client_m_initialize),  -1);
   rb_define_method(Jack_Client, "activate",
-                   Jack_Client_m_activate,    0);
+  RUBY_METHOD_FUNC(Jack_Client_m_activate),    0);
   rb_define_method(Jack_Client, "deactivate",
-                   Jack_Client_m_deactivate,  0);
+  RUBY_METHOD_FUNC(Jack_Client_m_deactivate),  0);
   rb_define_method(Jack_Client, "name",
-                   Jack_Client_m_name,        0);
+  RUBY_METHOD_FUNC(Jack_Client_m_name),        0);
 }
 
-void Init_Jack_Options()
+extern "C" void Init_Jack_Options()
 {
   rb_define_const(Jack_Options, "NullOption",    INT2NUM(JackNullOption));
   rb_define_const(Jack_Options, "NoStartServer", INT2NUM(JackNoStartServer));
@@ -92,7 +89,7 @@ void Init_Jack_Options()
   rb_define_const(Jack_Options, "SessionID",     INT2NUM(JackSessionID));
 }
 
-void Init_Jack_PortFlags()
+extern "C" void Init_Jack_PortFlags()
 {
   rb_define_const(Jack_PortFlags, "IsInput",     INT2NUM(JackPortIsInput));
   rb_define_const(Jack_PortFlags, "IsOutput",    INT2NUM(JackPortIsOutput));
@@ -101,7 +98,7 @@ void Init_Jack_PortFlags()
   rb_define_const(Jack_PortFlags, "IsTerminal",  INT2NUM(JackPortIsTerminal));
 }
 
-void Init_Jack_Status()
+extern "C" void Init_Jack_Status()
 {
   rb_define_const(Jack_Status, "Failure",        INT2NUM(JackFailure));
   rb_define_const(Jack_Status, "InvalidOption",  INT2NUM(JackInvalidOption));
@@ -118,21 +115,21 @@ void Init_Jack_Status()
   rb_define_const(Jack_Status, "ClientZombie",   INT2NUM(JackClientZombie));
 }
 
-void Init_Jack_Error()
+extern "C" void Init_Jack_Error()
 {
   
 }
 
-void Init_Jack_StatusError()
+extern "C" void Init_Jack_StatusError()
 {
   rb_define_method(Jack_StatusError, "initialize",
-                   Jack_StatusError_m_initialize,  -1);
+  RUBY_METHOD_FUNC(Jack_StatusError_m_initialize),  -1);
 }
 
 ///
 // Function Implementations
 
-static jack_client_t* Jack_Client_ptr(VALUE self)
+extern "C" jack_client_t* Jack_Client_ptr(VALUE self)
 {
   jack_client_t* ptr;
   VALUE ptr_obj;
@@ -148,16 +145,16 @@ static jack_client_t* Jack_Client_ptr(VALUE self)
   return ptr;
 }
 
-static void Jack_Client_ptr_free(jack_client_t* ptr)
+extern "C" void Jack_Client_ptr_free(jack_client_t* ptr)
 {
   jack_client_close(ptr);
 }
 
-VALUE Jack_Client_m_initialize(int argc, VALUE* argv, VALUE self)
+extern "C" VALUE Jack_Client_m_initialize(int argc, VALUE* argv, VALUE self)
 {
   jack_client_t* ptr;
   char*          name;
-  int            options;
+  jack_options_t options;
   jack_status_t  status;
   
   // Accept custom name as first argument
@@ -168,7 +165,7 @@ VALUE Jack_Client_m_initialize(int argc, VALUE* argv, VALUE self)
   
   // Accept custom options as second argument
   if(argc >= 2)
-    options = NUM2INT(argv[1]);
+    options = (jack_options_t)NUM2INT(argv[1]);
   else
     options = JackNullOption; // default options
   
@@ -184,24 +181,24 @@ VALUE Jack_Client_m_initialize(int argc, VALUE* argv, VALUE self)
   return self;
 }
 
-VALUE Jack_Client_m_activate(VALUE self)
+extern "C" VALUE Jack_Client_m_activate(VALUE self)
 {
   return INT2NUM(jack_activate(Jack_Client_ptr(self)));
 }
 
-VALUE Jack_Client_m_deactivate(VALUE self)
+extern "C" VALUE Jack_Client_m_deactivate(VALUE self)
 {
   return INT2NUM(jack_deactivate(Jack_Client_ptr(self)));
 }
 
-VALUE Jack_Client_m_name(VALUE self)
+extern "C" VALUE Jack_Client_m_name(VALUE self)
 {
   return rb_str_new2(jack_get_client_name(Jack_Client_ptr(self)));
 }
 
 
 
-void Jack_StatusError_raise(const char* str, int status)
+extern "C" void Jack_StatusError_raise(const char* str, int status)
 {
   VALUE args[2];
   args[0] = rb_str_new2(str);
@@ -209,12 +206,12 @@ void Jack_StatusError_raise(const char* str, int status)
   rb_exc_raise(rb_class_new_instance(sizeof(args), args, Jack_StatusError));
 }
 
-VALUE Jack_StatusError_m_initialize(int argc, VALUE* argv, VALUE self)
+extern "C" VALUE Jack_StatusError_m_initialize(int argc, VALUE* argv, VALUE self)
 {
   jack_status_t status;
   
   // Accept status bitflags as optional second argument
-  status = (argc >= 2) ? NUM2INT(argv[1]) : 0;
+  status = (jack_status_t)((argc >= 2) ? NUM2INT(argv[1]) : 0);
   
   // Pass first argument to super if it is there
   rb_call_super((argc >= 1), argv);
