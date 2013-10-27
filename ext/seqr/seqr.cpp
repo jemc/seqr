@@ -46,9 +46,9 @@ extern "C" VALUE wrap_Node_alloc(VALUE klass) {
 
 void Init_Node()
 {
-  VALUE c = rb_define_class_under(rb_eval_string("Seqr"), "Node", rb_cObject);
+  VALUE Node = rb_eval_string("Seqr::Node");
  
-  rb_define_alloc_func(c, wrap_Node_alloc);
+  rb_define_alloc_func(Node, wrap_Node_alloc);
 }
 
 
@@ -58,13 +58,13 @@ void Init_Node()
 
 extern "C" void Init_seqr()
 {
-  Jack = rb_eval_string("Seqr::Jack");
   Init_Jack();
   Init_Node();
 }
 
 void Init_Jack()
 {
+  Jack = rb_eval_string("Seqr::Jack");
   Jack_Client      = rb_define_class_under (Jack, "Client", rb_cObject);
   Init_Jack_Client();
   
