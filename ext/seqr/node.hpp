@@ -1,6 +1,6 @@
 
 ///
-// Node C++ class definition
+// C++ class definition
 
 VALUE rb_Node = Qnil;
 class Node
@@ -14,7 +14,7 @@ class Node
 
 
 ///
-// Node C++ methods
+// C++ methods
 
 Node::Node()
 {
@@ -70,7 +70,7 @@ extern "C" VALUE Node_m_source_setter(VALUE self, VALUE node) {
 
 
 ///
-// Include child classes of Node
+// Include child classes
 
 #include "node/pass_thru.hpp"
 
@@ -90,7 +90,8 @@ void Init_Node()
     RUBY_METHOD_FUNC (Node_m_source_setter), 1);
   
   ///
-  // Init child classes of Node
+  // Init child classes
+  
   Init_PassThruNode();
 }
 

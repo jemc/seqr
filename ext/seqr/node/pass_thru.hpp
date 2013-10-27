@@ -1,6 +1,6 @@
 
 ///
-// Node C++ class definition
+// C++ class definition
 
 VALUE rb_PassThruNode = Qnil;
 class PassThruNode : public Node {};
