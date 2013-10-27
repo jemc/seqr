@@ -9,7 +9,7 @@ spec = Gem::Specification.load("#{gemname}.gemspec")
 Rake::ExtensionTask.new(gemname, spec)
 
 # Rebuild gem
-task :g=>[:compile] do
+task :g=>[:clean, :compile] do
   print `rm #{gemname}*.gem`
   print `gem build #{gemname}.gemspec`
   print `gem install #{gemname}*.gem`

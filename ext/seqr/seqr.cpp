@@ -18,22 +18,49 @@ VALUE Jack               = Qnil;  void Init_Jack();
 ///
 // Function Declarations
 
-jack_client_t* Jack_Client_ptr(VALUE self);
-void Jack_Client_ptr_free(jack_client_t* ptr);
-extern "C" VALUE Jack_Client_k_alloc(VALUE klass);
 extern "C" VALUE Jack_Client_m_open(VALUE self, VALUE _options, VALUE _name);
-extern "C" VALUE Jack_Client_m_activate   (VALUE self);
-extern "C" VALUE Jack_Client_m_deactivate (VALUE self);
+extern "C" VALUE Jack_Client_m_close(VALUE self);
+extern "C" VALUE Jack_Client_m_activate(VALUE self);
+extern "C" VALUE Jack_Client_m_deactivate(VALUE self);
 extern "C" VALUE Jack_Client_m_name(VALUE self);
+
+
+
+
+///
+// Node
+class Node
+{
+  public:
+    Node* source_node;
+};
+
+extern "C" void wrap_Node_free(Node* p)
+{
+  ruby_xfree(p);
+}
+
+extern "C" VALUE wrap_Node_alloc(VALUE klass) {
+  return Data_Wrap_Struct(klass, NULL, wrap_Node_free, ruby_xmalloc(sizeof(Node)));
+}
+
+void Init_Node()
+{
+  VALUE c = rb_define_class_under(rb_eval_string("Seqr"), "Node", rb_cObject);
+ 
+  rb_define_alloc_func(c, wrap_Node_alloc);
+}
+
 
 
 ///
 // Module/Class Initialization
 
-void Init_seqr()
+extern "C" void Init_seqr()
 {
   Jack = rb_eval_string("Seqr::Jack");
   Init_Jack();
+  Init_Node();
 }
 
 void Init_Jack()
@@ -101,21 +128,7 @@ void Init_Jack_Status()
 ///
 // Function Implementations
 
-jack_client_t* Jack_Client_ptr(VALUE self)
-{
-  jack_client_t* ptr;
-  VALUE ptr_obj;
-  
-  ptr_obj = rb_iv_get(self, "@ptr");
-
-  Data_Get_Struct(ptr_obj, jack_client_t, ptr);
-  return ptr;
-}
-
-void Jack_Client_ptr_free(jack_client_t* ptr)
-{
-  jack_client_close(ptr);
-}
+#define Jack_Client_ptr(obj) ((jack_client_t*)NUM2LONG(rb_iv_get(obj, "@ptr")))
 
 extern "C" VALUE Jack_Client_m_open(VALUE self, VALUE _name, VALUE _options)
 {
@@ -126,10 +139,12 @@ extern "C" VALUE Jack_Client_m_open(VALUE self, VALUE _name, VALUE _options)
                          (jack_options_t)NUM2INT(_options), 
                          &status);
   
-  rb_iv_set(self, "@ptr", 
-    Data_Wrap_Struct(rb_cObject, NULL, Jack_Client_ptr_free, ptr));
-  
-  return INT2FIX(status);
+  return rb_ary_new3(2, INT2FIX(ptr), INT2FIX(status));
+}
+
+extern "C" VALUE Jack_Client_m_close(VALUE self)
+{
+  return INT2NUM(jack_client_close(Jack_Client_ptr(self)));
 }
 
 extern "C" VALUE Jack_Client_m_activate(VALUE self)

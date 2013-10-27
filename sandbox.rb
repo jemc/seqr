@@ -1,13 +1,22 @@
 
+require 'pry'
+
 at_exit {`killall jackd`}
 
 module Seqr
+  
+  class Node
+    def foo
+      "foo!"
+    end
+  end
+  
   module Jack
     
     class Client
       def initialize(name="Jack::Client", options=Jack::Options::NullOption)
-        status = open name, options
-        if status & Status::Failure
+        @ptr, status = open name, options
+        if (status & Status::Failure) != 0
           raise StatusError.new("Failed to open the Jack::Client", status)
         end
       end
@@ -31,8 +40,5 @@ require 'seqr'
 include Seqr
 
 
-
-p Jack::Client.new
-p Jack::Client.new('dog')
-sleep 0.5
-p Jack::Client.new('dog', Jack::Options::UseExactName)
+p Node.new
+p Node.new.foo
