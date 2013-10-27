@@ -73,10 +73,11 @@ extern "C" VALUE Node_m_source_node(VALUE self) {
 
 extern "C" VALUE Node_m_source_node_setter(VALUE self, VALUE node) {
   Node* c_self = wrap_Node_get(self);
+  
   c_self->rb_source_node = node;
   
-  if(node!=Qnil) // TODO: check type instead of for nil
-    c_self->source_node = wrap_Node_get(node);
+  if(node==Qnil) c_self->source_node = NULL;
+  else c_self->source_node = wrap_Node_get(node);
   
   return node;
 }

@@ -43,6 +43,7 @@ include Seqr
 p x = Node.new
 p y = Node.new
 
-p x.source_node
+p x.source_node=nil
 p y.source_node=x
+p x.source_node
 p y.source_node
