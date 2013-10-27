@@ -1,5 +1,7 @@
+
 ///
-// Node
+// Node C++ class definition
+
 class Node
 {
   public:
@@ -9,11 +11,19 @@ class Node
     Node();
 };
 
+
+///
+// Node C++ methods
+
 Node::Node()
 {
   this->source_node = NULL;
   this->source_node_rb = Qnil;
 }
+
+
+///
+// Ruby struct wrapping methods
 
 extern "C" void Node_w_mark(Node* p)
 {
@@ -37,6 +47,10 @@ extern "C" VALUE Node_w_alloc(VALUE klass)
   return Data_Wrap_Struct(klass, Node_w_mark, Node_w_free, new Node());
 }
 
+
+///
+// Ruby-accessible C methods
+
 extern "C" VALUE Node_m_source_node(VALUE self)
 {
   return Node_w_get(self)->source_node_rb;
@@ -52,6 +66,10 @@ extern "C" VALUE Node_m_source_node_setter(VALUE self, VALUE node) {
   
   return node;
 }
+
+
+///
+// Bind to Ruby object
 
 void Init_Node()
 {
