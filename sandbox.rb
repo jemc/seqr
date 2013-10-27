@@ -43,7 +43,7 @@ include Seqr
 p x = Node.new
 p y = PassThruNode.new
 
-p x.source_node=nil
-p y.source_node=x
-p x.source_node
-p y.source_node
+p x.source=nil
+p y.source=x
+p x.source
+p y.source

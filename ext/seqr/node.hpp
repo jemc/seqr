@@ -6,8 +6,8 @@ VALUE rb_Node = Qnil;
 class Node
 {
   public:
-    Node* source_node;
-    VALUE source_node_rb;
+    Node* source;
+    VALUE source_rb;
     
     Node();
 };
@@ -18,8 +18,8 @@ class Node
 
 Node::Node()
 {
-  this->source_node = NULL;
-  this->source_node_rb = Qnil;
+  this->source = NULL;
+  this->source_rb = Qnil;
 }
 
 
@@ -28,7 +28,7 @@ Node::Node()
 
 extern "C" void Node_w_mark(Node* p)
 {
-  rb_gc_mark(p->source_node_rb);
+  rb_gc_mark(p->source_rb);
 }
 
 extern "C" void Node_w_free(Node* p)
@@ -52,18 +52,18 @@ extern "C" VALUE Node_w_alloc(VALUE klass)
 ///
 // Ruby-accessible C methods
 
-extern "C" VALUE Node_m_source_node(VALUE self)
+extern "C" VALUE Node_m_source(VALUE self)
 {
-  return Node_w_get(self)->source_node_rb;
+  return Node_w_get(self)->source_rb;
 }
 
-extern "C" VALUE Node_m_source_node_setter(VALUE self, VALUE node) {
+extern "C" VALUE Node_m_source_setter(VALUE self, VALUE node) {
   Node* c_self = Node_w_get(self);
   
-  c_self->source_node_rb = node;
+  c_self->source_rb = node;
   
-  if(node==Qnil) c_self->source_node = NULL;
-  else c_self->source_node = Node_w_get(node);
+  if(node==Qnil) c_self->source = NULL;
+  else c_self->source = Node_w_get(node);
   
   return node;
 }
@@ -85,10 +85,10 @@ void Init_Node()
  
   rb_define_alloc_func(Node, Node_w_alloc);
   
-  rb_define_method(Node, "source_node",
-  RUBY_METHOD_FUNC(Node_m_source_node),        0);
-  rb_define_method(Node, "source_node=",
-  RUBY_METHOD_FUNC(Node_m_source_node_setter), 1);
+  rb_define_method(Node, "source",
+  RUBY_METHOD_FUNC(Node_m_source),        0);
+  rb_define_method(Node, "source=",
+  RUBY_METHOD_FUNC(Node_m_source_setter), 1);
   
   ///
   // Init child classes of Node
