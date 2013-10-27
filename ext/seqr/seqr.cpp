@@ -33,7 +33,7 @@ class Node
 {
   public:
     Node* source_node;
-    VALUE rb_source_node;
+    VALUE source_node_rb;
     
     Node();
 };
@@ -41,12 +41,12 @@ class Node
 Node::Node()
 {
   this->source_node = NULL;
-  this->rb_source_node = Qnil;
+  this->source_node_rb = Qnil;
 }
 
 extern "C" void wrap_Node_mark(Node* p)
 {
-  rb_gc_mark(p->rb_source_node);
+  rb_gc_mark(p->source_node_rb);
 }
 
 extern "C" void wrap_Node_free(Node* p)
@@ -68,13 +68,13 @@ extern "C" VALUE wrap_Node_alloc(VALUE klass) {
 }
 
 extern "C" VALUE Node_m_source_node(VALUE self) {
-  return wrap_Node_get(self)->rb_source_node;
+  return wrap_Node_get(self)->source_node_rb;
 }
 
 extern "C" VALUE Node_m_source_node_setter(VALUE self, VALUE node) {
   Node* c_self = wrap_Node_get(self);
   
-  c_self->rb_source_node = node;
+  c_self->source_node_rb = node;
   
   if(node==Qnil) c_self->source_node = NULL;
   else c_self->source_node = wrap_Node_get(node);
