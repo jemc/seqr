@@ -62,9 +62,7 @@ extern "C" Node* wrap_Node_get(VALUE self)
 }
 
 extern "C" VALUE wrap_Node_alloc(VALUE klass) {
-  Node* p = new Node();
-  
-  return Data_Wrap_Struct(klass, wrap_Node_mark, wrap_Node_free, p);
+  return Data_Wrap_Struct(klass, wrap_Node_mark, wrap_Node_free, new Node());
 }
 
 extern "C" VALUE Node_m_source_node(VALUE self) {
