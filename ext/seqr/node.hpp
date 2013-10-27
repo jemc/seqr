@@ -7,7 +7,7 @@ class Node
 {
   public:
     Node* source;
-    VALUE source_rb;
+    VALUE rb_source;
     
     Node();
 };
@@ -19,7 +19,7 @@ class Node
 Node::Node()
 {
   this->source = NULL;
-  this->source_rb = Qnil;
+  this->rb_source = Qnil;
 }
 
 
@@ -28,7 +28,7 @@ Node::Node()
 
 extern "C" void Node_w_mark(Node* p)
 {
-  rb_gc_mark(p->source_rb);
+  rb_gc_mark(p->rb_source);
 }
 
 extern "C" void Node_w_free(Node* p)
@@ -54,13 +54,13 @@ extern "C" VALUE Node_w_alloc(VALUE klass)
 
 extern "C" VALUE Node_m_source(VALUE self)
 {
-  return Node_w_get(self)->source_rb;
+  return Node_w_get(self)->rb_source;
 }
 
 extern "C" VALUE Node_m_source_setter(VALUE self, VALUE node) {
   Node* c_self = Node_w_get(self);
   
-  c_self->source_rb = node;
+  c_self->rb_source = node;
   
   if(node==Qnil) c_self->source = NULL;
   else c_self->source = Node_w_get(node);
