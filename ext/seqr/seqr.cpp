@@ -5,14 +5,14 @@
 /// 
 // Module/Class Hierarchy
 
-VALUE rb_Module=Qnil;  extern "C" void Init_seqr();
+VALUE rb_Module = Qnil; extern "C" void Init_seqr();
 
-VALUE Jack               = Qnil;  void Init_Jack();
-  VALUE Jack_Client      = Qnil;  void Init_Jack_Client();
+VALUE Jack               = Qnil;   void Init_Jack();
+  VALUE Jack_Client      = Qnil;   void Init_Jack_Client();
   
-  VALUE Jack_Options     = Qnil;  void Init_Jack_Options();
-  VALUE Jack_PortFlags   = Qnil;  void Init_Jack_PortFlags();
-  VALUE Jack_Status      = Qnil;  void Init_Jack_Status();
+  VALUE Jack_Options     = Qnil;   void Init_Jack_Options();
+  VALUE Jack_PortFlags   = Qnil;   void Init_Jack_PortFlags();
+  VALUE Jack_Status      = Qnil;   void Init_Jack_Status();
 
 
 ///

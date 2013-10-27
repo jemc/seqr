@@ -80,15 +80,14 @@ extern "C" VALUE Node_m_source_setter(VALUE self, VALUE node) {
 
 void Init_Node()
 {
-  VALUE Node = rb_define_class_under(rb_Module, "Node", rb_cObject);
-  rb_Node = Node;
- 
-  rb_define_alloc_func(Node, Node_w_alloc);
+  rb_Node = rb_define_class_under(rb_Module, "Node", rb_cObject);
   
-  rb_define_method(Node, "source",
-  RUBY_METHOD_FUNC(Node_m_source),        0);
-  rb_define_method(Node, "source=",
-  RUBY_METHOD_FUNC(Node_m_source_setter), 1);
+  rb_define_alloc_func(rb_Node, Node_w_alloc);
+  
+  rb_define_method(rb_Node, "source",
+    RUBY_METHOD_FUNC (Node_m_source),        0);
+  rb_define_method(rb_Node, "source=",
+    RUBY_METHOD_FUNC (Node_m_source_setter), 1);
   
   ///
   // Init child classes of Node
