@@ -2,6 +2,7 @@
 ///
 // Node C++ class definition
 
+VALUE rb_Node = Qnil;
 class Node
 {
   public:
@@ -69,11 +70,18 @@ extern "C" VALUE Node_m_source_node_setter(VALUE self, VALUE node) {
 
 
 ///
+// Include child classes of Node
+
+#include "node/pass_thru.hpp"
+
+
+///
 // Bind to Ruby object
 
 void Init_Node()
 {
-  VALUE Node = rb_eval_string("Seqr::Node");
+  VALUE Node = rb_define_class_under(rb_Module, "Node", rb_cObject);
+  rb_Node = Node;
  
   rb_define_alloc_func(Node, Node_w_alloc);
   
@@ -81,4 +89,9 @@ void Init_Node()
   RUBY_METHOD_FUNC(Node_m_source_node),        0);
   rb_define_method(Node, "source_node=",
   RUBY_METHOD_FUNC(Node_m_source_node_setter), 1);
+  
+  ///
+  // Init child classes of Node
+  Init_PassThruNode();
 }
+

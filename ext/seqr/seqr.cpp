@@ -2,12 +2,11 @@
 #include <ruby.h>
 #include <jack/jack.h>
 
-#include "node.hpp"
-
 /// 
 // Module/Class Hierarchy
 
-/* c-extension */      extern "C" void Init_seqr();
+VALUE rb_Module=Qnil;  extern "C" void Init_seqr();
+
 VALUE Jack               = Qnil;  void Init_Jack();
   VALUE Jack_Client      = Qnil;  void Init_Jack_Client();
   
@@ -29,12 +28,6 @@ extern "C" VALUE Jack_Client_m_name(VALUE self);
 
 ///
 // Module/Class Initialization
-
-extern "C" void Init_seqr()
-{
-  Init_Jack();
-  Init_Node();
-}
 
 void Init_Jack()
 {
@@ -134,4 +127,21 @@ extern "C" VALUE Jack_Client_m_deactivate(VALUE self)
 extern "C" VALUE Jack_Client_m_name(VALUE self)
 {
   return rb_str_new2(jack_get_client_name(Jack_Client_ptr(self)));
+}
+
+
+///
+// Include other objects in module
+
+#include "node.hpp"
+
+
+///
+// Bind to Ruby module
+
+extern "C" void Init_seqr()
+{
+  rb_Module = rb_define_module("Seqr");
+  Init_Jack();
+  Init_Node();
 }
