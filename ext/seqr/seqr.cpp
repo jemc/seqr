@@ -33,15 +33,52 @@ class Node
 {
   public:
     Node* source_node;
+    VALUE rb_source_node;
+    
+    Node();
 };
+
+Node::Node()
+{
+  this->source_node = NULL;
+  this->rb_source_node = Qnil;
+}
+
+extern "C" void wrap_Node_mark(Node* p)
+{
+  rb_gc_mark(p->rb_source_node);
+}
 
 extern "C" void wrap_Node_free(Node* p)
 {
-  ruby_xfree(p);
+  delete p;
+}
+
+extern "C" Node* wrap_Node_get(VALUE self)
+{
+  Node* node_ptr;
+  Data_Get_Struct(self, Node, node_ptr);
+  return node_ptr;
 }
 
 extern "C" VALUE wrap_Node_alloc(VALUE klass) {
-  return Data_Wrap_Struct(klass, NULL, wrap_Node_free, ruby_xmalloc(sizeof(Node)));
+  Node* p = new Node();
+  
+  return Data_Wrap_Struct(klass, wrap_Node_mark, wrap_Node_free, p);
+}
+
+extern "C" VALUE Node_m_source_node(VALUE self) {
+  return wrap_Node_get(self)->rb_source_node;
+}
+
+extern "C" VALUE Node_m_source_node_setter(VALUE self, VALUE node) {
+  Node* c_self = wrap_Node_get(self);
+  c_self->rb_source_node = node;
+  
+  if(node!=Qnil) // TODO: check type instead of for nil
+    c_self->source_node = wrap_Node_get(node);
+  
+  return node;
 }
 
 void Init_Node()
@@ -49,6 +86,11 @@ void Init_Node()
   VALUE Node = rb_eval_string("Seqr::Node");
  
   rb_define_alloc_func(Node, wrap_Node_alloc);
+  
+  rb_define_method(Node, "source_node",
+  RUBY_METHOD_FUNC(Node_m_source_node),        0);
+  rb_define_method(Node, "source_node=",
+  RUBY_METHOD_FUNC(Node_m_source_node_setter), 1);
 }
 
 

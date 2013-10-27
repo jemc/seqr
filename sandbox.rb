@@ -40,5 +40,9 @@ require 'seqr'
 include Seqr
 
 
-p Node.new
-p Node.new.foo
+p x = Node.new
+p y = Node.new
+
+p x.source_node
+p y.source_node=x
+p y.source_node
