@@ -5,6 +5,9 @@
 VALUE rb_Node = Qnil;
 class Node
 {
+  private:
+    static std::vector<Node*> final_nodes;
+    
   public:
     Node* source;
     VALUE rb_source;
@@ -12,29 +15,13 @@ class Node
     Node();
     virtual void cpp2rb_mark();
     virtual int process (jack_nframes_t nframes) {};
+    
+    // Static functions - class-level, not instance level
+    static void final_node_add(Node* n) { final_nodes.push_back(n); };
+    static void final_node_remove(Node * n); // TODO: Implement
+    static int main_process(jack_nframes_t nframes, void* arg);
 };
 CPP2RB_W_FUNCS(Node);
-
-
-///
-// Global vector containing all final nodes
-//   and main_process, called by Jack, which calls process on all final nodes
-
-std::vector<Node*> g_final_nodes;
-
-extern "C" int main_process (jack_nframes_t nframes, void* arg)
-{
-  int ii;
-  int result;
-  
-  for(ii=0; ii < g_final_nodes.size(); ii++)
-  {
-    result=(g_final_nodes[ii]->process(nframes));
-    if(result) return result;
-  }
-  
-  return 0;
-}
 
 
 ///
@@ -46,10 +33,28 @@ Node::Node()
   this->rb_source = Qnil;
 }
 
+// Garbage collection marker
 void Node::cpp2rb_mark()
 {
-  printf("mark1");
   rb_gc_mark(this->rb_source);
+}
+
+// Static list of final nodes
+std::vector<Node*> Node::final_nodes;
+
+// Audio processing callback, called by Jack
+int Node::main_process (jack_nframes_t nframes, void* arg)
+{
+  int ii;
+  int result;
+  
+  for(ii=0; ii < final_nodes.size(); ii++)
+  {
+    result=(final_nodes[ii]->process(nframes));
+    if(result) return result;
+  }
+  
+  return 0;
 }
 
 

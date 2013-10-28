@@ -18,8 +18,18 @@ class PassThruNode : public Node {
       this->jclient = NULL;
       this->rb_jclient = Qnil;
       
-      g_final_nodes.push_back(this);
+      final_node_add(this);
     };
+    
+    ~PassThruNode()
+    {
+      final_node_remove(this);
+    }
+    
+    virtual void cpp2rb_mark() 
+    {
+      rb_gc_mark(this->rb_jclient);
+    }
     
     virtual int process (jack_nframes_t nframes)
     {
@@ -57,7 +67,7 @@ extern "C" VALUE PassThruNode_m_activate(VALUE self, VALUE jc)
   
   client = c_self->jclient->jclient;
   
-  jack_set_process_callback(client, main_process, 0);
+  jack_set_process_callback(client, Node::main_process, 0);
   if(client == NULL) return Qnil;
   
   input_port = jack_port_register(client, "input",  JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput,  0);
