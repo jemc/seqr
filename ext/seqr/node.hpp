@@ -18,7 +18,9 @@ class Node
     
     // Static functions - class-level, not instance level
     static void final_node_add(Node* n) { final_nodes.push_back(n); };
-    static void final_node_remove(Node * n); // TODO: Implement
+    static void final_node_remove(Node * n)
+    { final_nodes.erase(std::remove(final_nodes.begin(), final_nodes.end(), n), 
+                        final_nodes.end()); };
     static int main_process(jack_nframes_t nframes, void* arg);
 };
 CPP2RB_W_FUNCS(Node);
