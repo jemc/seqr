@@ -8,7 +8,11 @@ class PassThruNode : public Node {
     Jack_Client* jclient;
     VALUE     rb_jclient;
     
-    PassThruNode();
+    PassThruNode()
+    {
+      this->jclient = NULL;
+      this->rb_jclient = Qnil;
+    };
 };
 CPP2RB_W_FUNCS(PassThruNode);
 
@@ -26,17 +30,32 @@ extern "C" int process (jack_nframes_t nframes, void *arg)
   return 0;
 }
 
-PassThruNode::PassThruNode()
+
+///
+// Ruby-accessible C methods
+
+extern "C" VALUE PassThruNode_m_jclient(VALUE self)
 {
+  return PassThruNode_w_get(self)->rb_jclient;
+}
+
+extern "C" VALUE PassThruNode_m_activate(VALUE self, VALUE jc)
+{
+  PassThruNode* c_self;
   const char **ports;
   jack_client_t* client;
   jack_status_t  status;
   
-  this->jclient = Jack_Client_w_get(rb_eval_string("Jack::Client.new('dog')"));
-  client = this->jclient->jclient;
+  if(jc==Qnil) return Qnil;
   
+  c_self = PassThruNode_w_get(self);
+  c_self->rb_jclient = jc;
+  c_self->jclient = Jack_Client_w_get(jc);
+  
+  client = c_self->jclient->jclient;
   
   jack_set_process_callback(client, process, 0);
+  if(client == NULL) return Qnil;
   
   input_port = jack_port_register(client, "input",  JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput,  0);
   output_port = jack_port_register(client, "output", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
@@ -72,25 +91,6 @@ PassThruNode::PassThruNode()
 
 
 ///
-// Ruby-accessible C methods
-
-extern "C" VALUE PassThruNode_m_jclient(VALUE self)
-{
-  return PassThruNode_w_get(self)->rb_jclient;
-}
-
-extern "C" VALUE PassThruNode_m_jclient_setter(VALUE self, VALUE obj) {
-  PassThruNode* c_self = PassThruNode_w_get(self);
-  
-  c_self->rb_jclient = obj;
-  
-  if(obj == Qnil) c_self->jclient = NULL;
-  else c_self->jclient = Jack_Client_w_get(obj);
-  
-  return obj;
-}
-
-///
 // Bind to Ruby object
 
 void Init_PassThruNode()
@@ -101,6 +101,8 @@ void Init_PassThruNode()
   
   rb_define_method(rb_PassThruNode, "jclient",
     RUBY_METHOD_FUNC (PassThruNode_m_jclient),        0);
-  rb_define_method(rb_PassThruNode, "jclient=",
-    RUBY_METHOD_FUNC (PassThruNode_m_jclient_setter), 1);
+  // rb_define_method(rb_PassThruNode, "jclient=",
+  //   RUBY_METHOD_FUNC (PassThruNode_m_jclient_setter), 1);
+  rb_define_method(rb_PassThruNode, "activate",
+    RUBY_METHOD_FUNC (PassThruNode_m_activate),       1);
 }

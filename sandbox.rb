@@ -5,12 +5,6 @@ at_exit {`killall jackd`}
 
 module Seqr
   
-  class Node
-    def foo
-      "foo!"
-    end
-  end
-  
   module Jack
     
     class Client
@@ -38,6 +32,12 @@ end
 
 require 'seqr'
 include Seqr
+
+class Seqr::PassThruNode
+  def initialize(jclient=Jack::Client.new)
+    activate jclient
+  end
+end
 
 
 # p Jack::Client.new('dog')
