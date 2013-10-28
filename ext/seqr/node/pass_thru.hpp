@@ -11,5 +11,5 @@ class PassThruNode : public Node {};
 
 void Init_PassThruNode()
 {
-  rb_PassThruNode = rb_define_class_under(rb_Module, "PassThruNode", rb_Node);
+  rb_PassThruNode = rb_define_class_under(rb_ThisModule, "PassThruNode", rb_Node);
 }

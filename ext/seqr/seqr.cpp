@@ -4,7 +4,7 @@
 
 ///
 // Global pointer to the Toplevel Ruby module (Seqr)
-VALUE rb_Module = Qnil; extern "C" void Init_seqr();
+VALUE rb_ThisModule = Qnil; extern "C" void Init_seqr();
 
 ///
 // Include objects in module
@@ -17,7 +17,7 @@ VALUE rb_Module = Qnil; extern "C" void Init_seqr();
 
 extern "C" void Init_seqr()
 {
-  rb_Module = rb_define_module("Seqr");
+  rb_ThisModule = rb_define_module("Seqr");
   Init_Jack();
   Init_Node();
 }

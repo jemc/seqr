@@ -38,9 +38,9 @@ extern "C" void Node_w_free(Node* p)
 
 extern "C" Node* Node_w_get(VALUE self)
 {
-  Node* node_ptr;
-  Data_Get_Struct(self, Node, node_ptr);
-  return node_ptr;
+  Node* p;
+  Data_Get_Struct(self, Node, p);
+  return p;
 }
 
 extern "C" VALUE Node_w_alloc(VALUE klass)
@@ -80,7 +80,7 @@ extern "C" VALUE Node_m_source_setter(VALUE self, VALUE node) {
 
 void Init_Node()
 {
-  rb_Node = rb_define_class_under(rb_Module, "Node", rb_cObject);
+  rb_Node = rb_define_class_under(rb_ThisModule, "Node", rb_cObject);
   
   rb_define_alloc_func(rb_Node, Node_w_alloc);
   

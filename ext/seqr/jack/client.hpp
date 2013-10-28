@@ -1,6 +1,29 @@
 
 VALUE rb_Jack_Client = Qnil;
 
+
+///
+// Ruby struct wrapping methods
+
+extern "C" void Jack_Client_w_free(jack_client_t** p)
+{
+  ruby_xfree(p);
+}
+
+extern "C" jack_client_t* Jack_Client_w_get(VALUE self)
+{
+  jack_client_t** p;
+  Data_Get_Struct(self, jack_client_t*, p);
+  return *p;
+}
+
+extern "C" VALUE Jack_Client_w_alloc(VALUE klass)
+{
+  return Data_Wrap_Struct(klass, NULL, Jack_Client_w_free, 
+                          ruby_xmalloc(sizeof(jack_client_t*)));
+}
+
+
 ///
 // Function Implementations
 
@@ -43,6 +66,10 @@ extern "C" VALUE Jack_Client_m_name(VALUE self)
 
 void Init_Jack_Client()
 {
+  rb_Jack_Client = rb_define_class_under(rb_Jack, "Client", rb_cObject);
+  
+  rb_define_alloc_func(rb_Jack_Client, Jack_Client_w_alloc);
+  
   rb_define_method(rb_Jack_Client, "open",
     RUBY_METHOD_FUNC (Jack_Client_m_open),        2);
   rb_define_method(rb_Jack_Client, "activate",
