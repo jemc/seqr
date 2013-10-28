@@ -10,9 +10,9 @@ class Node
     VALUE rb_source;
     
     Node();
-    void cpp2rb_mark() { rb_gc_mark(this->rb_source); }
+    virtual void cpp2rb_mark();
 };
-CPP2RB_W_FUNCS(Node)
+CPP2RB_W_FUNCS(Node);
 
 
 ///
@@ -22,6 +22,12 @@ Node::Node()
 {
   this->source = NULL;
   this->rb_source = Qnil;
+}
+
+void Node::cpp2rb_mark()
+{
+  printf("mark1");
+  rb_gc_mark(this->rb_source);
 }
 
 
