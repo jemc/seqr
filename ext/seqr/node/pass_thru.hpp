@@ -13,35 +13,46 @@ class PassThruNode : public Node {
     Jack_Client* jclient;
     VALUE     rb_jclient;
     
-    PassThruNode()
-    {
-      this->jclient = NULL;
-      this->rb_jclient = Qnil;
-      
-      final_node_add(this);
-    };
+    PassThruNode();
+    ~PassThruNode();
     
-    ~PassThruNode()
-    {
-      final_node_remove(this);
-    }
-    
-    virtual void cpp2rb_mark() 
-    {
-      rb_gc_mark(this->rb_jclient);
-    }
-    
-    virtual int process (jack_nframes_t nframes)
-    {
-      jack_default_audio_sample_t *out = (jack_default_audio_sample_t *) jack_port_get_buffer (output_port, nframes);
-      jack_default_audio_sample_t *in = (jack_default_audio_sample_t *) jack_port_get_buffer (input_port, nframes);
-
-      memcpy (out, in, sizeof (jack_default_audio_sample_t) * nframes);
-      
-      return 0;
-    }
+    virtual void cpp2rb_mark();
+    virtual int process (jack_nframes_t nframes);
 };
 CPP2RB_W_FUNCS(PassThruNode);
+
+
+///
+// C++ methods
+
+PassThruNode::PassThruNode()
+{
+  this->jclient = NULL;
+  this->rb_jclient = Qnil;
+  
+  final_node_add(this);
+};
+
+PassThruNode::~PassThruNode()
+{
+  final_node_remove(this);
+}
+
+void PassThruNode::cpp2rb_mark() 
+{
+  Node::cpp2rb_mark();
+  rb_gc_mark(this->rb_jclient);
+}
+
+int PassThruNode::process (jack_nframes_t nframes)
+{
+  jack_default_audio_sample_t *out = (jack_default_audio_sample_t *) jack_port_get_buffer (output_port, nframes);
+  jack_default_audio_sample_t *in = (jack_default_audio_sample_t *) jack_port_get_buffer (input_port, nframes);
+
+  memcpy (out, in, sizeof (jack_default_audio_sample_t) * nframes);
+  
+  return 0;
+}
 
 
 ///
