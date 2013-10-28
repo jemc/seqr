@@ -11,8 +11,30 @@ class Node
     
     Node();
     virtual void cpp2rb_mark();
+    virtual int process (jack_nframes_t nframes) {};
 };
 CPP2RB_W_FUNCS(Node);
+
+
+///
+// Global vector containing all final nodes
+//   and main_process, called by Jack, which calls process on all final nodes
+
+std::vector<Node*> g_final_nodes;
+
+extern "C" int main_process (jack_nframes_t nframes, void* arg)
+{
+  int ii;
+  int result;
+  
+  for(ii=0; ii < g_final_nodes.size(); ii++)
+  {
+    result=(g_final_nodes[ii]->process(nframes));
+    if(result) return result;
+  }
+  
+  return 0;
+}
 
 
 ///

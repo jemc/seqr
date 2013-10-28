@@ -1,4 +1,6 @@
 
+#include <vector>
+
 #include <ruby.h>
 #include <jack/jack.h>
 

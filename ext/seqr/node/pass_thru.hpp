@@ -1,4 +1,9 @@
 
+
+
+jack_port_t *input_port;
+jack_port_t *output_port;
+
 ///
 // C++ class definition
 
@@ -12,23 +17,21 @@ class PassThruNode : public Node {
     {
       this->jclient = NULL;
       this->rb_jclient = Qnil;
+      
+      g_final_nodes.push_back(this);
     };
+    
+    virtual int process (jack_nframes_t nframes)
+    {
+      jack_default_audio_sample_t *out = (jack_default_audio_sample_t *) jack_port_get_buffer (output_port, nframes);
+      jack_default_audio_sample_t *in = (jack_default_audio_sample_t *) jack_port_get_buffer (input_port, nframes);
+
+      memcpy (out, in, sizeof (jack_default_audio_sample_t) * nframes);
+      
+      return 0;
+    }
 };
 CPP2RB_W_FUNCS(PassThruNode);
-
-
-jack_port_t *input_port;
-jack_port_t *output_port;
-
-extern "C" int process (jack_nframes_t nframes, void *arg)
-{
-  jack_default_audio_sample_t *out = (jack_default_audio_sample_t *) jack_port_get_buffer (output_port, nframes);
-  jack_default_audio_sample_t *in = (jack_default_audio_sample_t *) jack_port_get_buffer (input_port, nframes);
-
-  memcpy (out, in, sizeof (jack_default_audio_sample_t) * nframes);
-  
-  return 0;
-}
 
 
 ///
@@ -54,7 +57,7 @@ extern "C" VALUE PassThruNode_m_activate(VALUE self, VALUE jc)
   
   client = c_self->jclient->jclient;
   
-  jack_set_process_callback(client, process, 0);
+  jack_set_process_callback(client, main_process, 0);
   if(client == NULL) return Qnil;
   
   input_port = jack_port_register(client, "input",  JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput,  0);

@@ -46,18 +46,6 @@ module Seqr
 end
 
 
-
-p Jack::Client.new('dog')
-p Jack::Client.new('dog')
-p Jack::Client.new('dog')
-# sleep 1
-
-# p x = Node.new
 p y = PassThruNode.new
 
 sleep 2
-
-# p x.source=nil
-# p y.source=x
-# p x.source
-# p y.source
