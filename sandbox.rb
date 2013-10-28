@@ -15,7 +15,7 @@ module Seqr
     
     class Client
       def initialize(name="Jack::Client", options=Jack::Options::NullOption)
-        @ptr, status = open name, options
+        _, status = open name, options
         if (status & Status::Failure) != 0
           raise StatusError.new("Failed to open the Jack::Client", status)
         end
@@ -41,7 +41,7 @@ include Seqr
 
 
 p Jack::Client.new('dog')
-sleep 2
+sleep 1
 
 # p x = Node.new
 # p y = PassThruNode.new

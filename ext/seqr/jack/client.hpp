@@ -27,8 +27,6 @@ extern "C" VALUE Jack_Client_w_alloc(VALUE klass)
 ///
 // Function Implementations
 
-#define Jack_Client_ptr(obj) ((jack_client_t*)NUM2LONG(rb_iv_get(obj, "@ptr")))
-
 extern "C" VALUE Jack_Client_m_open(VALUE self, VALUE _name, VALUE _options)
 {
   jack_client_t* ptr;
@@ -43,22 +41,22 @@ extern "C" VALUE Jack_Client_m_open(VALUE self, VALUE _name, VALUE _options)
 
 extern "C" VALUE Jack_Client_m_close(VALUE self)
 {
-  return INT2NUM(jack_client_close(Jack_Client_ptr(self)));
+  return INT2NUM(jack_client_close(Jack_Client_w_get(self)));
 }
 
 extern "C" VALUE Jack_Client_m_activate(VALUE self)
 {
-  return INT2NUM(jack_activate(Jack_Client_ptr(self)));
+  return INT2NUM(jack_activate(Jack_Client_w_get(self)));
 }
 
 extern "C" VALUE Jack_Client_m_deactivate(VALUE self)
 {
-  return INT2NUM(jack_deactivate(Jack_Client_ptr(self)));
+  return INT2NUM(jack_deactivate(Jack_Client_w_get(self)));
 }
 
 extern "C" VALUE Jack_Client_m_name(VALUE self)
 {
-  return rb_str_new2(jack_get_client_name(Jack_Client_ptr(self)));
+  return rb_str_new2(jack_get_client_name(Jack_Client_w_get(self)));
 }
 
 ///
