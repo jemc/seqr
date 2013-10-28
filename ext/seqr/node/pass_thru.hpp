@@ -12,7 +12,7 @@ class PassThruNode : public Node {
 };
 
 
-NODE_W_ALLOC(PassThruNode)
+CPP2RB_W_FUNCS(PassThruNode)
 
 ///
 // Bind to Ruby object
