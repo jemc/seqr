@@ -40,11 +40,11 @@ require 'seqr'
 include Seqr
 
 
-p Jack::Client.new('dog')
-sleep 1
+# p Jack::Client.new('dog')
+# sleep 1
 
-# p x = Node.new
-# p y = PassThruNode.new
+p x = Node.new
+p y = PassThruNode.new
 
 # p x.source=nil
 # p y.source=x
