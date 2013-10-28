@@ -12,15 +12,7 @@ class PassThruNode : public Node {
 };
 
 
-///
-// Ruby struct wrapping methods
-
-extern "C" VALUE PassThruNode_w_alloc(VALUE klass)
-{
-  return Data_Wrap_Struct(klass, Node_w_mark, Node_w_free, 
-                          new PassThruNode());
-}
-
+NODE_W_ALLOC(PassThruNode_w_alloc, PassThruNode)
 
 ///
 // Bind to Ruby object

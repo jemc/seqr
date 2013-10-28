@@ -43,10 +43,12 @@ extern "C" Node* Node_w_get(VALUE self)
   return p;
 }
 
-extern "C" VALUE Node_w_alloc(VALUE klass)
-{
-  return Data_Wrap_Struct(klass, Node_w_mark, Node_w_free, new Node());
-}
+// Define a macro to make child class alloc definitions DRYer
+#define NODE_W_ALLOC(Node_w_alloc, Node)                        \
+extern "C" VALUE Node_w_alloc(VALUE klass)                      \
+{ return Data_Wrap_Struct(klass, Node_w_mark, Node_w_free, new Node()); }
+
+NODE_W_ALLOC(Node_w_alloc, Node)
 
 
 ///
