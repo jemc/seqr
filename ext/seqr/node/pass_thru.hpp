@@ -101,8 +101,6 @@ void Init_PassThruNode()
   
   rb_define_method(rb_PassThruNode, "jclient",
     RUBY_METHOD_FUNC (PassThruNode_m_jclient),        0);
-  // rb_define_method(rb_PassThruNode, "jclient=",
-  //   RUBY_METHOD_FUNC (PassThruNode_m_jclient_setter), 1);
   rb_define_method(rb_PassThruNode, "activate",
     RUBY_METHOD_FUNC (PassThruNode_m_activate),       1);
 }

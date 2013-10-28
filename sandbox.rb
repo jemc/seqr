@@ -3,11 +3,26 @@ require 'pry'
 
 at_exit {`killall jackd`}
 
+require 'seqr'
+include Seqr
+
+
 module Seqr
+  
+  class PassThruNode
+    def initialize(jclient=Jack::Client.new)
+      activate jclient
+    end
+  end
   
   module Jack
     
     class Client
+      
+      def self.new(*args)
+        @instance ||= super
+      end
+      
       def initialize(name="Jack::Client", options=Jack::Options::NullOption)
         _, status = open name, options
         if (status & Status::Failure) != 0
@@ -30,17 +45,11 @@ module Seqr
   end
 end
 
-require 'seqr'
-include Seqr
-
-class Seqr::PassThruNode
-  def initialize(jclient=Jack::Client.new)
-    activate jclient
-  end
-end
 
 
-# p Jack::Client.new('dog')
+p Jack::Client.new('dog')
+p Jack::Client.new('dog')
+p Jack::Client.new('dog')
 # sleep 1
 
 # p x = Node.new
