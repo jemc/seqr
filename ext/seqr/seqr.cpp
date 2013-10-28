@@ -6,13 +6,11 @@
 // Global pointer to the Toplevel Ruby module (Seqr)
 VALUE rb_Module = Qnil; extern "C" void Init_seqr();
 
-
 ///
 // Include objects in module
 
 #include "jack.hpp"
 #include "node.hpp"
-
 
 ///
 // Bind to Ruby module
