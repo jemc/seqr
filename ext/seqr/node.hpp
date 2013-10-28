@@ -10,8 +10,9 @@ class Node
     VALUE rb_source;
     
     Node();
-    void rb_mark() { rb_gc_mark(this->rb_source); }
+    void cpp2rb_mark() { rb_gc_mark(this->rb_source); }
 };
+CPP2RB_W_FUNCS(Node)
 
 
 ///
@@ -22,39 +23,6 @@ Node::Node()
   this->source = NULL;
   this->rb_source = Qnil;
 }
-
-
-///
-// Ruby struct wrapping methods
-
-
-// Macro to define garbage collector marking function
-#define CPP2RB_W_MARK(Kls) \
-extern "C" void Kls ## _w_mark(Kls* p) { p->rb_mark(); }
-
-// Macro to define deallocator function
-#define CPP2RB_W_FREE(Kls) \
-extern "C" void Kls ## _w_free(Kls* p) { delete p; }
-
-// Macro to define allocator function
-#define CPP2RB_W_ALLOC(Kls) \
-extern "C" VALUE Kls ## _w_alloc(VALUE klass) \
-{ return Data_Wrap_Struct(klass, Kls ## _w_mark, Kls ## _w_free, new Kls()); }
-
-// Macro to define pointer unwrapping function
-#define CPP2RB_W_GET(Kls) \
-extern "C" Kls* Kls ## _w_get(VALUE self) \
-{ Kls* p; Data_Get_Struct(self, Kls, p); return p; }
-
-// Macro to define all 4 '_w_' functions
-#define CPP2RB_W_FUNCS(Kls) \
-  CPP2RB_W_MARK(Kls) \
-  CPP2RB_W_FREE(Kls) \
-  CPP2RB_W_ALLOC(Kls) \
-  CPP2RB_W_GET(Kls)
-
-
-CPP2RB_W_FUNCS(Node)
 
 
 ///

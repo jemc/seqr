@@ -2,6 +2,8 @@
 #include <ruby.h>
 #include <jack/jack.h>
 
+#include "util/cpp2rb.hpp"
+
 ///
 // Global pointer to the Toplevel Ruby module (Seqr)
 VALUE rb_ThisModule = Qnil; extern "C" void Init_seqr();
