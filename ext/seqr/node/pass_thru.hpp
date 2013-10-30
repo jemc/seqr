@@ -14,8 +14,8 @@ class PassThruNode : public Node {
     ~PassThruNode();
     virtual void cpp2rb_mark();
     
-    virtual int  process (jack_nframes_t nframes);
-    virtual void activate(VALUE rb_jclient);
+    virtual int process (jack_nframes_t nframes);
+    virtual int activate(VALUE rb_jclient);
 };
 CPP2RB_W_FUNCS(PassThruNode);
 
@@ -54,13 +54,10 @@ int PassThruNode::process(jack_nframes_t nframes)
   return 0;
 }
 
-void PassThruNode::activate(VALUE jc)
+int PassThruNode::activate(VALUE jc)
 {
-  const char **ports;
+  const char**   ports;
   jack_client_t* client;
-  jack_status_t  status;
-  
-  if(jc==Qnil) return;
   
   this->rb_jclient = jc;
   this->jclient = Jack_Client_w_get(jc);
@@ -70,26 +67,14 @@ void PassThruNode::activate(VALUE jc)
   this->input_port  = jack_port_register(client, "input",  JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput,  0);
   this->output_port = jack_port_register(client, "output", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
   
-  if ((ports = jack_get_ports(client, NULL, NULL, JackPortIsPhysical|JackPortIsOutput)) == NULL) {
-    fprintf(stderr, "Cannot find any physical capture ports\n");
-    exit(1);
-  }
-  
-  if (jack_connect(client, ports[0], jack_port_name (this->input_port))) {
-    fprintf (stderr, "cannot connect input ports\n");
-  }
-  
+  ports = jack_get_ports(client, NULL, NULL, JackPortIsPhysical|JackPortIsOutput);
+  if(!ports || jack_connect(client, ports[0], jack_port_name(this->input_port)))
+    return 1;
   free(ports);
   
-  if ((ports = jack_get_ports(client, NULL, NULL, JackPortIsPhysical|JackPortIsInput)) == NULL) {
-    fprintf(stderr, "Cannot find any physical playback ports\n");
-    exit(1);
-  }
-
-  if (jack_connect(client, jack_port_name(this->output_port), ports[0])) {
-    fprintf (stderr, "cannot connect output ports\n");
-  }
-  
+  ports = jack_get_ports(client, NULL, NULL, JackPortIsPhysical|JackPortIsInput);
+  if(!ports || jack_connect(client, jack_port_name(this->output_port), ports[0]))
+    return 1;
   free(ports);
 }
 

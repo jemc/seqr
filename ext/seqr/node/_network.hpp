@@ -61,10 +61,11 @@ int NodeNetwork::activate()
   
   if(jack_activate(jclient->jclient)) return 1;
   
+  int result = 0;
   for(int ii=0; ii < jack_nodes.size(); ii++)
-    jack_nodes[ii]->activate(rb_jclient);
+    result += jack_nodes[ii]->activate(rb_jclient) ? 1 : 0;
   
-  return 0;
+  return result;
 }
 
 ///
