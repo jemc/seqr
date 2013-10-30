@@ -76,6 +76,7 @@ void Init_Node()
   ///
   // Init children
   
+  Init_NodeNetwork();
   Init_PassThruNode();
 }
 

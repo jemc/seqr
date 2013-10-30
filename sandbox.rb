@@ -45,6 +45,7 @@ module Seqr
   end
 end
 
+p NodeNetwork.activate Jack::Client.new
 p PassThruNode.new
 
 sleep 0.5

@@ -75,17 +75,9 @@ extern "C" VALUE PassThruNode_m_activate(VALUE self, VALUE jc)
   
   client = p->jclient->jclient;
   
-  jack_set_process_callback(client, NodeNetwork::main_process, 0);
-  if(client == NULL) return Qnil;
-  
   p->input_port = jack_port_register(client, "input",  JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput,  0);
   p->output_port = jack_port_register(client, "output", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
   
-  if (jack_activate(client)) {
-    fprintf (stderr, "cannot activate client");
-    exit(1);
-  }
-   
   if ((ports = jack_get_ports(client, NULL, NULL, JackPortIsPhysical|JackPortIsOutput)) == NULL) {
     fprintf(stderr, "Cannot find any physical capture ports\n");
     exit(1);
