@@ -11,7 +11,9 @@ class Node
     
     Node();
     virtual void cpp2rb_mark();
-    virtual int process (jack_nframes_t nframes) {};
+    
+    virtual int  process(jack_nframes_t nframes) {};
+    virtual void activate(VALUE rb_jclient)      {};
 };
 CPP2RB_W_FUNCS(Node);
 

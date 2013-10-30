@@ -9,12 +9,6 @@ include Seqr
 
 module Seqr
   
-  class PassThruNode
-    def initialize(jclient=Jack::Client.new)
-      activate jclient
-    end
-  end
-  
   module Jack
     
     class Client
