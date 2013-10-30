@@ -42,6 +42,6 @@ end
 p NodeNetwork.activate Jack::Client.new
 p PassThruNode.new
 
-sleep 0.5
+sleep 0.2
 
 p NodeNetwork
