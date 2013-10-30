@@ -91,7 +91,7 @@ extern "C" VALUE PassThruNode_m_activate(VALUE self, VALUE jc)
     exit(1);
   }
   
-  if (jack_connect (client, ports[0], jack_port_name (c_self->input_port))) {
+  if (c_self->jclient->connect(ports[0], jack_port_name(c_self->input_port))) {
     fprintf (stderr, "cannot connect input ports\n");
   }
   
@@ -102,7 +102,7 @@ extern "C" VALUE PassThruNode_m_activate(VALUE self, VALUE jc)
     exit(1);
   }
 
-  if (jack_connect (client, jack_port_name (c_self->output_port), ports[0])) {
+  if (c_self->jclient->connect(jack_port_name(c_self->output_port), ports[0])) {
     fprintf (stderr, "cannot connect output ports\n");
   }
   
