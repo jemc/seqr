@@ -55,20 +55,16 @@ int NodeNetwork::main_process(jack_nframes_t nframes, void* arg)
 // Activate Jack and all nodes that relate to Jack
 int NodeNetwork::activate()
 {
-  if (jclient->jclient == NULL) {
-    fprintf (stderr, "null client");
-    exit(1);
-  }
+  if(jclient->jclient == NULL) return 1;
   
   jack_set_process_callback(jclient->jclient, main_process, 0);
   
-  if (jack_activate(jclient->jclient)) {
-    fprintf (stderr, "cannot activate client");
-    exit(1);
-  }
+  if(jack_activate(jclient->jclient)) return 1;
   
   for(int ii=0; ii < jack_nodes.size(); ii++)
     jack_nodes[ii]->activate(rb_jclient);
+  
+  return 0;
 }
 
 ///
@@ -81,14 +77,16 @@ extern "C" VALUE NodeNetwork_s_jclient(VALUE self)
 
 extern "C" VALUE NodeNetwork_s_activate(VALUE self, VALUE jc)
 {
-  jack_client_t* client;
-  
-  if(jc==Qnil) return Qnil;
+  // TODO: handle reactivation (provide deactivation?)
+  if(NodeNetwork::jclient) return Qnil; // Disallow reactivation
   
   NodeNetwork::rb_jclient = jc;
   NodeNetwork::jclient = Jack_Client_w_get(jc);
   
-  NodeNetwork::activate();
+  if(NodeNetwork::activate())
+    rb_raise(rb_eRuntimeError, "Failed to activate the NodeNetwork");
+  
+  return Qnil;
 }
 
 
