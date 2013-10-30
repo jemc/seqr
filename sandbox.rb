@@ -48,4 +48,4 @@ end
 
 p y = PassThruNode.new
 
-sleep 2
+sleep 0.4

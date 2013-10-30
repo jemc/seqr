@@ -18,6 +18,8 @@ class Jack_Client
     {
       return jack_get_ports(this->jclient, name_pattern, type_pattern, flags);
     }
+    
+    int activate() { return jack_activate(this->jclient); }
 };
 CPP2RB_W_FUNCS(Jack_Client);
 
