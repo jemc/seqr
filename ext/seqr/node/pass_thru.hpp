@@ -27,12 +27,12 @@ PassThruNode::PassThruNode()
   this->jclient = NULL;
   this->rb_jclient = Qnil;
   
-  final_node_add(this);
+  NodeNetwork::final_node_add(this);
 };
 
 PassThruNode::~PassThruNode()
 {
-  final_node_remove(this);
+  NodeNetwork::final_node_remove(this);
 }
 
 void PassThruNode::cpp2rb_mark() 
@@ -75,7 +75,7 @@ extern "C" VALUE PassThruNode_m_activate(VALUE self, VALUE jc)
   
   client = p->jclient->jclient;
   
-  jack_set_process_callback(client, Node::main_process, 0);
+  jack_set_process_callback(client, NodeNetwork::main_process, 0);
   if(client == NULL) return Qnil;
   
   p->input_port = jack_port_register(client, "input",  JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput,  0);

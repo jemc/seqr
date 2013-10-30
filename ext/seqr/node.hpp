@@ -5,9 +5,6 @@
 VALUE rb_Node = Qnil;
 class Node
 {
-  private:
-    static std::vector<Node*> final_nodes;
-    
   public:
     Node* source;
     VALUE rb_source;
@@ -15,13 +12,6 @@ class Node
     Node();
     virtual void cpp2rb_mark();
     virtual int process (jack_nframes_t nframes) {};
-    
-    // Static functions - class-level, not instance level
-    static void final_node_add(Node* n) { final_nodes.push_back(n); };
-    static void final_node_remove(Node * n)
-    { final_nodes.erase(std::remove(final_nodes.begin(), final_nodes.end(), n), 
-                        final_nodes.end()); };
-    static int main_process(jack_nframes_t nframes, void* arg);
 };
 CPP2RB_W_FUNCS(Node);
 
@@ -39,24 +29,6 @@ Node::Node()
 void Node::cpp2rb_mark()
 {
   rb_gc_mark(this->rb_source);
-}
-
-// Static list of final nodes
-std::vector<Node*> Node::final_nodes;
-
-// Audio processing callback, called by Jack
-int Node::main_process (jack_nframes_t nframes, void* arg)
-{
-  int ii;
-  int result;
-  
-  for(ii=0; ii < final_nodes.size(); ii++)
-  {
-    result=(final_nodes[ii]->process(nframes));
-    if(result) return result;
-  }
-  
-  return 0;
 }
 
 
@@ -81,8 +53,9 @@ extern "C" VALUE Node_m_source_setter(VALUE self, VALUE node) {
 
 
 ///
-// Include child classes
+// Include children
 
+#include "node/_network.hpp"
 #include "node/pass_thru.hpp"
 
 
@@ -101,7 +74,7 @@ void Init_Node()
     RUBY_METHOD_FUNC (Node_m_source_setter), 1);
   
   ///
-  // Init child classes
+  // Init children
   
   Init_PassThruNode();
 }

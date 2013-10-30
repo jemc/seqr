@@ -45,7 +45,8 @@ module Seqr
   end
 end
 
+p PassThruNode.new
 
-p y = PassThruNode.new
+sleep 0.5
 
-sleep 2
+p NodeNetwork
