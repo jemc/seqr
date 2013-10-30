@@ -10,6 +10,14 @@ class Jack_Client
     
     Jack_Client() {};
     virtual void cpp2rb_mark() {};
+    
+    const char** get_port_names(
+      const char*   name_pattern, // Regular expression or NULL
+      const char*   type_pattern, // Regular expression or NULL
+      unsigned long flags)        // JackPortFlags
+    {
+      return jack_get_ports(this->jclient, name_pattern, type_pattern, flags);
+    }
 };
 CPP2RB_W_FUNCS(Jack_Client);
 

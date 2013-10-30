@@ -86,7 +86,7 @@ extern "C" VALUE PassThruNode_m_activate(VALUE self, VALUE jc)
     exit(1);
   }
    
-  if ((ports = jack_get_ports (client, NULL, NULL, JackPortIsPhysical|JackPortIsOutput)) == NULL) {
+  if ((ports = c_self->jclient->get_port_names(NULL, NULL, JackPortIsPhysical|JackPortIsOutput)) == NULL) {
     fprintf(stderr, "Cannot find any physical capture ports\n");
     exit(1);
   }
@@ -97,7 +97,7 @@ extern "C" VALUE PassThruNode_m_activate(VALUE self, VALUE jc)
   
   free (ports);
   
-  if ((ports = jack_get_ports (client, NULL, NULL, JackPortIsPhysical|JackPortIsInput)) == NULL) {
+  if ((ports = c_self->jclient->get_port_names(NULL, NULL, JackPortIsPhysical|JackPortIsInput)) == NULL) {
     fprintf(stderr, "Cannot find any physical playback ports\n");
     exit(1);
   }
