@@ -62,51 +62,51 @@ extern "C" VALUE PassThruNode_m_jclient(VALUE self)
 
 extern "C" VALUE PassThruNode_m_activate(VALUE self, VALUE jc)
 {
-  PassThruNode* c_self;
+  PassThruNode* p;
   const char **ports;
   jack_client_t* client;
   jack_status_t  status;
   
   if(jc==Qnil) return Qnil;
   
-  c_self = PassThruNode_w_get(self);
-  c_self->rb_jclient = jc;
-  c_self->jclient = Jack_Client_w_get(jc);
+  p = PassThruNode_w_get(self);
+  p->rb_jclient = jc;
+  p->jclient = Jack_Client_w_get(jc);
   
-  client = c_self->jclient->jclient;
+  client = p->jclient->jclient;
   
   jack_set_process_callback(client, Node::main_process, 0);
   if(client == NULL) return Qnil;
   
-  c_self->input_port = jack_port_register(client, "input",  JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput,  0);
-  c_self->output_port = jack_port_register(client, "output", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
+  p->input_port = jack_port_register(client, "input",  JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput,  0);
+  p->output_port = jack_port_register(client, "output", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
   
-  if (jack_activate (client)) {
+  if (jack_activate(client)) {
     fprintf (stderr, "cannot activate client");
     exit(1);
   }
    
-  if ((ports = jack_get_ports (client, NULL, NULL, JackPortIsPhysical|JackPortIsOutput)) == NULL) {
+  if ((ports = jack_get_ports(client, NULL, NULL, JackPortIsPhysical|JackPortIsOutput)) == NULL) {
     fprintf(stderr, "Cannot find any physical capture ports\n");
     exit(1);
   }
   
-  if (jack_connect (client, ports[0], jack_port_name (c_self->input_port))) {
+  if (jack_connect(client, ports[0], jack_port_name (p->input_port))) {
     fprintf (stderr, "cannot connect input ports\n");
   }
   
-  free (ports);
+  free(ports);
   
-  if ((ports = jack_get_ports (client, NULL, NULL, JackPortIsPhysical|JackPortIsInput)) == NULL) {
+  if ((ports = jack_get_ports(client, NULL, NULL, JackPortIsPhysical|JackPortIsInput)) == NULL) {
     fprintf(stderr, "Cannot find any physical playback ports\n");
     exit(1);
   }
 
-  if (jack_connect (client, jack_port_name (c_self->output_port), ports[0])) {
+  if (jack_connect(client, jack_port_name(p->output_port), ports[0])) {
     fprintf (stderr, "cannot connect output ports\n");
   }
   
-  free (ports);
+  free(ports);
 }
 
 
