@@ -3,10 +3,8 @@
 // C++ class definition
 
 VALUE rb_PassThruNode = Qnil;
-class PassThruNode : public Node {
+class PassThruNode : public JackNode {
   public:
-    Jack_Client* jclient;
-    VALUE     rb_jclient;
     jack_port_t *input_port;
     jack_port_t *output_port;
     
@@ -25,17 +23,12 @@ CPP2RB_W_FUNCS(PassThruNode);
 
 PassThruNode::PassThruNode()
 {
-  this->jclient = NULL;
-  this->rb_jclient = Qnil;
-  
   NodeNetwork::final_node_add(this);
-  NodeNetwork::jack_node_add(this);
 };
 
 PassThruNode::~PassThruNode()
 {
   NodeNetwork::final_node_remove(this);
-  NodeNetwork::jack_node_remove(this);
 }
 
 void PassThruNode::cpp2rb_mark() 
@@ -46,6 +39,8 @@ void PassThruNode::cpp2rb_mark()
 
 int PassThruNode::process(jack_nframes_t nframes)
 {
+  if(!this->jclient) return 0;
+  
   jack_default_audio_sample_t *out = (jack_default_audio_sample_t *) jack_port_get_buffer (this->output_port, nframes);
   jack_default_audio_sample_t *in = (jack_default_audio_sample_t *) jack_port_get_buffer (this->input_port, nframes);
 
@@ -76,6 +71,8 @@ int PassThruNode::activate(VALUE jc)
   if(!ports || jack_connect(client, jack_port_name(this->output_port), ports[0]))
     return 1;
   free(ports);
+  
+  return 0;
 }
 
 ///
@@ -85,7 +82,6 @@ extern "C" VALUE PassThruNode_m_jclient(VALUE self)
 {
   return PassThruNode_w_get(self)->rb_jclient;
 }
-
 
 
 ///

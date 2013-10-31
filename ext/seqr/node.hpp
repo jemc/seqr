@@ -58,6 +58,9 @@ extern "C" VALUE Node_m_source_setter(VALUE self, VALUE node) {
 // Include children
 
 #include "node/_network.hpp"
+
+#include "node/jack.hpp"
+
 #include "node/pass_thru.hpp"
 
 

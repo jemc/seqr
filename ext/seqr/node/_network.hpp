@@ -36,8 +36,8 @@ CPP2RB_W_FUNCS(NodeNetwork);
 // Static members redeclared
 std::vector<Node*> NodeNetwork::final_nodes;
 std::vector<Node*> NodeNetwork::jack_nodes;
-Jack_Client*       NodeNetwork::jclient;
-VALUE              NodeNetwork::rb_jclient;
+Jack_Client*       NodeNetwork::jclient = NULL;
+VALUE              NodeNetwork::rb_jclient = Qnil;
 
 // Audio processing callback, called by Jack
 int NodeNetwork::main_process(jack_nframes_t nframes, void* arg)
