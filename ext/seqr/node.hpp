@@ -61,7 +61,9 @@ extern "C" VALUE Node_m_source_setter(VALUE self, VALUE node) {
 
 #include "node/jack.hpp"
 
-#include "node/pass_thru.hpp"
+#include "node/jack_input.hpp"
+#include "node/jack_output.hpp"
+// #include "node/pass_thru.hpp"
 
 
 ///
@@ -82,6 +84,8 @@ void Init_Node()
   // Init children
   
   Init_NodeNetwork();
-  Init_PassThruNode();
+  Init_JackInputNode();
+  Init_JackOutputNode();
+  // Init_PassThruNode();
 }
 
