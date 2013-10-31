@@ -23,7 +23,7 @@ class NodeNetwork
                         final_nodes.end()); };
     
     static void jack_node_add(Node* n)
-    { jack_nodes.push_back(n); if(jclient) n->activate(rb_jclient); };
+    { jack_nodes.push_back(n); };
     static void jack_node_remove(Node * n)
     { jack_nodes.erase(std::remove(jack_nodes.begin(), jack_nodes.end(), n), 
                         jack_nodes.end()); };

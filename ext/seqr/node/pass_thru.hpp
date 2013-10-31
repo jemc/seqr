@@ -24,6 +24,7 @@ CPP2RB_W_FUNCS(PassThruNode);
 PassThruNode::PassThruNode()
 {
   NodeNetwork::final_node_add(this);
+  this->activate(this->rb_jclient);
 };
 
 PassThruNode::~PassThruNode()
@@ -39,7 +40,7 @@ void PassThruNode::cpp2rb_mark()
 
 int PassThruNode::process(jack_nframes_t nframes)
 {
-  if(!this->jclient) return 0;
+  if(!this->jack_is_ready()) return 0;
   
   jack_default_audio_sample_t *out = (jack_default_audio_sample_t *) jack_port_get_buffer (this->output_port, nframes);
   jack_default_audio_sample_t *in = (jack_default_audio_sample_t *) jack_port_get_buffer (this->input_port, nframes);
@@ -54,10 +55,8 @@ int PassThruNode::activate(VALUE jc)
   const char**   ports;
   jack_client_t* client;
   
-  this->rb_jclient = jc;
-  this->jclient = Jack_Client_w_get(jc);
-  
-  client = this->jclient->jclient;
+  client = store_jclient(jc)->jclient;
+  if(!this->jack_is_ready()) return 1;
   
   this->input_port  = jack_port_register(client, "input",  JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput,  0);
   this->output_port = jack_port_register(client, "output", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);

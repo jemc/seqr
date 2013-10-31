@@ -11,6 +11,8 @@ class JackNode : public Node {
     ~JackNode();
     virtual void cpp2rb_mark();
     
+    bool jack_is_ready() { return (jclient!=NULL); };
+    
     Jack_Client* store_jclient(VALUE);
 };
 
@@ -19,12 +21,10 @@ class JackNode : public Node {
 
 JackNode::JackNode()
 {
-  this->jclient = NULL;
-  this->rb_jclient = Qnil;
-  
-  fprintf(stderr, "this should happen!\n");
-  
   NodeNetwork::jack_node_add(this);
+  
+  this->jclient    = NodeNetwork::jclient;
+  this->rb_jclient = NodeNetwork::rb_jclient;
 };
 
 JackNode::~JackNode()
