@@ -28,7 +28,7 @@ class NodeNetwork
     { jack_nodes.erase(std::remove(jack_nodes.begin(), jack_nodes.end(), n), 
                         jack_nodes.end()); };
     
-    static int main_process(jack_nframes_t nframes, void* arg);
+    static int main_process(nframes_t nframes, void* arg);
     static int activate();
 };
 CPP2RB_W_FUNCS(NodeNetwork);
@@ -40,7 +40,7 @@ Jack_Client*       NodeNetwork::jclient = NULL;
 VALUE              NodeNetwork::rb_jclient = Qnil;
 
 // Audio processing callback, called by Jack
-int NodeNetwork::main_process(jack_nframes_t nframes, void* arg)
+int NodeNetwork::main_process(nframes_t nframes, void* arg)
 {
   int result;
   

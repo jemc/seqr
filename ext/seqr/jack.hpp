@@ -7,6 +7,9 @@ VALUE rb_Jack = Qnil;
 #include "jack/constants.hpp"
 #include "jack/client.hpp"
 
+typedef jack_default_audio_sample_t audio_sample_t;
+typedef jack_nframes_t              nframes_t;
+
 ///
 // Bind to Ruby module
 
