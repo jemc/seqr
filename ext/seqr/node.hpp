@@ -5,6 +5,9 @@
 VALUE rb_Node = Qnil;
 class Node
 {
+  audio_sample_t* o_buf;
+  audio_sample_t* i_buf;
+  
   public:
     Node* source;
     VALUE rb_source;
@@ -12,8 +15,9 @@ class Node
     Node();
     virtual void cpp2rb_mark();
     
-    virtual int process(jack_nframes_t nframes) {};
-    virtual int activate(VALUE rb_jclient)      {};
+    virtual audio_sample_t* get_buffer(nframes_t nframes) {};
+    virtual int process (nframes_t nframes) {};
+    virtual int activate(VALUE rb_jclient)  {};
 };
 CPP2RB_W_FUNCS(Node);
 
