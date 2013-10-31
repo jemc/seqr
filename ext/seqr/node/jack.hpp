@@ -12,7 +12,6 @@ class JackNode : public Node {
     virtual void cpp2rb_mark();
     
     bool jack_is_ready() { return (jclient!=NULL); };
-    
     Jack_Client* store_jclient(VALUE);
 };
 

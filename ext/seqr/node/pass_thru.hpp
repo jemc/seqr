@@ -10,7 +10,6 @@ class PassThruNode : public JackNode {
     
     PassThruNode();
     ~PassThruNode();
-    virtual void cpp2rb_mark();
     
     virtual int process (jack_nframes_t nframes);
     virtual int activate(VALUE rb_jclient);
@@ -30,12 +29,6 @@ PassThruNode::PassThruNode()
 PassThruNode::~PassThruNode()
 {
   NodeNetwork::final_node_remove(this);
-}
-
-void PassThruNode::cpp2rb_mark() 
-{
-  Node::cpp2rb_mark();
-  rb_gc_mark(this->rb_jclient);
 }
 
 int PassThruNode::process(jack_nframes_t nframes)
@@ -74,14 +67,6 @@ int PassThruNode::activate(VALUE jc)
   return 0;
 }
 
-///
-// Ruby-accessible C methods
-
-extern "C" VALUE PassThruNode_m_jclient(VALUE self)
-{
-  return PassThruNode_w_get(self)->rb_jclient;
-}
-
 
 ///
 // Bind to Ruby object
@@ -91,7 +76,4 @@ void Init_PassThruNode()
   rb_PassThruNode = rb_define_class_under(rb_ThisModule, "PassThruNode", rb_Node);
   
   rb_define_alloc_func(rb_PassThruNode, PassThruNode_w_alloc);
-  
-  rb_define_method(rb_PassThruNode, "jclient",
-     RUBY_METHOD_FUNC(PassThruNode_m_jclient),        0);
 }
