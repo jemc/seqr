@@ -13,4 +13,7 @@ unless find_library('jack', 'jack_client_open')
   abort "Couldn't find the required jack runtime.  Install libjack."
 end
 
+$CPPFLAGS += '--std=c++11'
+# p $CPPFLAGS
+
 create_makefile ext_name

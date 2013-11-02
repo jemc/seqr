@@ -5,7 +5,7 @@
 VALUE rb_Node = Qnil;
 class Node
 {
-  private:
+  protected:
     std::vector<audio_sample_t> buf;
   
   public:
