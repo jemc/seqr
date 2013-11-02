@@ -43,8 +43,6 @@ end
 NodeNetwork.activate Jack::Client.new
 sleep 0.2
 
-# p PassThruNode.new
+o = JackOutputNode.new
+o.source = JackInputNode.new
 sleep 0.2
-
-p JackInputNode.new
-p JackOutputNode.new
