@@ -44,5 +44,8 @@ NodeNetwork.activate Jack::Client.new
 sleep 0.2
 
 o = JackOutputNode.new
-o.source = JackInputNode.new
+o.source = GainNode.new
+o.source.source = JackInputNode.new
+puts 'whoa!'
 sleep 0.2
+puts 'done'

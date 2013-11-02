@@ -67,6 +67,7 @@ extern "C" VALUE Node_m_source_setter(VALUE self, VALUE node) {
 
 #include "node/jack_input.hpp"
 #include "node/jack_output.hpp"
+#include "node/gain.hpp"
 
 
 ///
@@ -89,5 +90,6 @@ void Init_Node()
   Init_NodeNetwork();
   Init_JackInputNode();
   Init_JackOutputNode();
+  Init_GainNode();
 }
 
