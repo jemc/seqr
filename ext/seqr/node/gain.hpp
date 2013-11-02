@@ -4,9 +4,6 @@
 
 VALUE rb_GainNode = Qnil;
 class GainNode : public Node {
-  private:
-    std::vector<audio_sample_t> buf;
-  
   public:
     virtual audio_sample_t* get_buffer(nframes_t nframes);
 };

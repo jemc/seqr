@@ -5,8 +5,8 @@
 VALUE rb_Node = Qnil;
 class Node
 {
-  audio_sample_t* o_buf;
-  audio_sample_t* i_buf;
+  private:
+    std::vector<audio_sample_t> buf;
   
   public:
     Node* source;
