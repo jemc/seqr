@@ -27,3 +27,7 @@ extern "C" Kls* Kls ## _w_get(VALUE self) \
   CPP2RB_W_FREE(Kls) \
   CPP2RB_W_ALLOC(Kls) \
   CPP2RB_W_GET(Kls)
+
+// Call this macro to register the defined functions as part of the class
+#define CPP2RB_W_FUNCS_REG(Kls) \
+  rb_define_alloc_func(rb_ ## Kls, Kls ## _w_alloc);

@@ -71,7 +71,7 @@ void Init_Jack_Client()
 {
   rb_Jack_Client = rb_define_class_under(rb_Jack, "Client", rb_cObject);
   
-  rb_define_alloc_func(rb_Jack_Client, Jack_Client_w_alloc);
+  CPP2RB_W_FUNCS_REG(Jack_Client);
   
   rb_define_method(rb_Jack_Client, "open",
     RUBY_METHOD_FUNC (Jack_Client_m_open),        2);

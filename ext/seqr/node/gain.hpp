@@ -34,5 +34,5 @@ void Init_GainNode()
 {
   rb_GainNode = rb_define_class_under(rb_ThisModule, "GainNode", rb_Node);
   
-  rb_define_alloc_func(rb_GainNode, GainNode_w_alloc);
+  CPP2RB_W_FUNCS_REG(GainNode);
 }

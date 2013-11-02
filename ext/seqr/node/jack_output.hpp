@@ -69,5 +69,5 @@ void Init_JackOutputNode()
 {
   rb_JackOutputNode = rb_define_class_under(rb_ThisModule, "JackOutputNode", rb_Node);
   
-  rb_define_alloc_func(rb_JackOutputNode, JackOutputNode_w_alloc);
+  CPP2RB_W_FUNCS_REG(JackOutputNode);
 }

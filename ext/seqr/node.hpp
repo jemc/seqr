@@ -77,7 +77,7 @@ void Init_Node()
 {
   rb_Node = rb_define_class_under(rb_ThisModule, "Node", rb_cObject);
   
-  rb_define_alloc_func(rb_Node, Node_w_alloc);
+  CPP2RB_W_FUNCS_REG(Node);
   
   rb_define_method(rb_Node, "source",
     RUBY_METHOD_FUNC (Node_m_source),        0);
