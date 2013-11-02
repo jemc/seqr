@@ -21,10 +21,10 @@ audio_sample_t* GainNode::get_buffer(nframes_t nframes)
   audio_sample_t* in = this->source->get_buffer(nframes);
   if(!in) return NULL;
   
-  this->buf.assign(in, in + (nframes * sizeof(audio_sample_t)));
+  this->buf.clear();
   
-  // for(int i=0; i++; i<nframes)
-  //   this->buf[i] = in[i]*0.25;
+  for(int i=0; i<nframes; i++)
+    this->buf.push_back(in[i]*1.0);
   
   return this->buf.data();
 }

@@ -47,5 +47,5 @@ o = JackOutputNode.new
 o.source = GainNode.new
 o.source.source = JackInputNode.new
 puts 'whoa!'
-sleep 0.2
+sleep 0.4
 puts 'done'
