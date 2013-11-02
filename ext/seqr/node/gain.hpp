@@ -3,7 +3,7 @@
 // C++ class definition
 
 VALUE rb_GainNode = Qnil;
-class GainNode : public JackNode {
+class GainNode : public Node {
   private:
     std::vector<audio_sample_t> buf;
   
