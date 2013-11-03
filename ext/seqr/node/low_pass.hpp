@@ -1,6 +1,6 @@
 
 ///
-// C++ class definition
+// LowPassNode implements out(n) = in(n) + in(n-1)
 
 VALUE rb_LowPassNode = Qnil;
 class LowPassNode : public Node {
