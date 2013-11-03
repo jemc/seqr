@@ -1,5 +1,22 @@
 
 ///
+// C++ class to form as a base for CPP2RB objects
+
+class Cpp2Rb
+{
+  public:
+    std::vector<VALUE*> rb_param_list;
+    
+    virtual void cpp2rb_mark()
+    {
+      for (auto it=this->rb_param_list.begin(); 
+           it!=this->rb_param_list.end(); ++it)
+        rb_gc_mark(**it);
+    };
+};
+
+
+///
 // Ruby wrapping functions for C++ classes
 
 // Macro to define garbage collector marking function
@@ -56,3 +73,8 @@ extern "C" VALUE Kls ## _m_ ## ParamName ## _setter(VALUE self, VALUE new_val) \
          RUBY_METHOD_FUNC(Kls ## _m_ ## ParamName),            0); \
   rb_define_method(rb_ ## Kls, RubyParamName "=", \
          RUBY_METHOD_FUNC(Kls ## _m_ ## ParamName ## _setter), 1);
+
+// Use in object constructor to register params as part of Cpp2Rb object
+#define CPP2RB_P_INIT(ParamName) \
+  this->rb_param_list.push_back(&rb_ ## ParamName);
+

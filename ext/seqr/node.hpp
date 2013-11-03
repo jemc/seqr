@@ -3,15 +3,15 @@
 // C++ class definition
 
 VALUE rb_Node = Qnil;
-class Node
+class Node : public Cpp2Rb
 {
   protected:
     std::vector<audio_sample_t> buf;
   
   public:
-    CPP2RB_P_MEMBER(source, Node*, NULL);
+    Node();
     
-    virtual void cpp2rb_mark();
+    CPP2RB_P_MEMBER(source, Node*, NULL);
     
     virtual audio_sample_t* get_buffer(nframes_t nframes) {};
     virtual int process (nframes_t nframes) {};
@@ -21,13 +21,9 @@ CPP2RB_W_FUNCS(Node);
 CPP2RB_P_FUNCS(Node, source, Node_w_get);
 
 
-///
-// C++ methods
-
-// Garbage collection marker
-void Node::cpp2rb_mark()
+Node::Node()
 {
-  rb_gc_mark(this->rb_source);
+  CPP2RB_P_INIT(source);
 }
 
 
