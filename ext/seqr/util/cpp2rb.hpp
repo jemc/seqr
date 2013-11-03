@@ -20,7 +20,6 @@ extern "C" VALUE Kls ## _w_alloc(VALUE klass) \
 extern "C" Kls* Kls ## _w_get(VALUE self) \
 { Kls* p; Data_Get_Struct(self, Kls, p); return p; }
 
-
 // Macro to define all 4 '_w_' functions
 #define CPP2RB_W_FUNCS(Kls) \
   CPP2RB_W_MARK(Kls) \
@@ -31,3 +30,29 @@ extern "C" Kls* Kls ## _w_get(VALUE self) \
 // Call this macro to register the defined functions as part of the class
 #define CPP2RB_W_FUNCS_REG(Kls) \
   rb_define_alloc_func(rb_ ## Kls, Kls ## _w_alloc);
+
+
+///
+// Ruby-accessible C++ parameter creator macros
+
+// Use in a class definition to add the appropriate members
+#define CPP2RB_P_MEMBER(ParamName, TypeName, InitialValue) \
+  VALUE rb_ ## ParamName = Qnil; \
+  TypeName ParamName = InitialValue;
+
+// Use to define the ruby interfacing getter/setter funcs
+#define CPP2RB_P_FUNCS(Kls, ParamName, TypeFunc) \
+extern "C" VALUE Kls ## _m_ ## ParamName(VALUE self) \
+{ return Kls ## _w_get(self)->rb_ ## ParamName; } \
+extern "C" VALUE Kls ## _m_ ## ParamName ## _setter(VALUE self, VALUE new_val) \
+{ Kls* c_self = Kls ## _w_get(self); \
+  c_self->rb_ ## ParamName = new_val; \
+  c_self->ParamName = TypeFunc(new_val); \
+  return new_val; }
+
+// Use in Init function to register the funcs with Ruby
+#define CPP2RB_P_FUNCS_REG(Kls, ParamName, RubyParamName) \
+  rb_define_method(rb_ ## Kls, RubyParamName, \
+         RUBY_METHOD_FUNC(Kls ## _m_ ## ParamName),            0); \
+  rb_define_method(rb_ ## Kls, RubyParamName "=", \
+         RUBY_METHOD_FUNC(Kls ## _m_ ## ParamName ## _setter), 1);
