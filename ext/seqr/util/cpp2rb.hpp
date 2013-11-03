@@ -56,3 +56,24 @@ extern "C" VALUE Kls ## _m_ ## ParamName ## _setter(VALUE self, VALUE new_val) \
          RUBY_METHOD_FUNC(Kls ## _m_ ## ParamName),            0); \
   rb_define_method(rb_ ## Kls, RubyParamName "=", \
          RUBY_METHOD_FUNC(Kls ## _m_ ## ParamName ## _setter), 1);
+
+
+class Param
+{
+  public:
+    VALUE rb_val = Qnil;
+};
+
+class DoubleParam
+{
+  public:
+    DoubleParam(double initial_val) { this->val = initial_val; };
+    double val;
+};
+
+template <typename TypeName> class XParam
+{
+  public:
+    XParam(TypeName initial_val) { this->val = initial_val; };
+    TypeName val;
+};

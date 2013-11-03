@@ -10,12 +10,15 @@ class Node
   
   public:
     CPP2RB_P_MEMBER(source, Node*, NULL);
+    std::unordered_map<std::string,Param*> params;
+    
+    Node();
     
     virtual void cpp2rb_mark();
     
     virtual audio_sample_t* get_buffer(nframes_t nframes) {};
-    virtual int process (nframes_t nframes) {};
-    virtual int activate(VALUE rb_jclient)  {};
+    virtual int process(nframes_t nframes) {};
+    virtual int activate(VALUE rb_jclient) {};
 };
 CPP2RB_W_FUNCS(Node);
 CPP2RB_P_FUNCS(Node, source, Node_w_get);
@@ -24,10 +27,19 @@ CPP2RB_P_FUNCS(Node, source, Node_w_get);
 ///
 // C++ methods
 
+Node::Node()
+{
+  // CPP2RB_Param<double>* ptr = CPP2RB_Param(1.0)
+  // this->params.push_back(*ptr);
+  params["test"]  = (Param*)(new DoubleParam(1.0));
+  params["test2"] = (Param*)(new XParam<double> (1.0));
+}
+
 // Garbage collection marker
 void Node::cpp2rb_mark()
 {
-  rb_gc_mark(this->rb_source);
+  for(auto it=this->params.begin(); it!=this->params.end(); ++it)
+    rb_gc_mark(it->second->rb_val);
 }
 
 

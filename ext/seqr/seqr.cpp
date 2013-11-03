@@ -1,6 +1,8 @@
 
+#include <string>
 #include <vector>
 #include <algorithm>
+#include <unordered_map>
 
 #include <ruby.h>
 #include <jack/jack.h>
