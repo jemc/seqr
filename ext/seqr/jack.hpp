@@ -10,6 +10,12 @@ VALUE rb_Jack = Qnil;
 typedef jack_default_audio_sample_t audio_sample_t;
 typedef jack_nframes_t              nframes_t;
 
+#define AUDIO_SAMPLE_MAX 100.0
+#define AUDIO_SAMPLE_MIN -100.0
+#define AUDIO_SAMPLE_CLIP(Samp) \
+  if     (Samp<AUDIO_SAMPLE_MIN) {Samp=AUDIO_SAMPLE_MIN;} \
+  else if(Samp>AUDIO_SAMPLE_MAX) {Samp=AUDIO_SAMPLE_MAX;}
+
 ///
 // Bind to Ruby module
 
