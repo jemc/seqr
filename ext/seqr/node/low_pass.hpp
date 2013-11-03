@@ -22,6 +22,13 @@ LowPassNode::LowPassNode()
   CPP2RB_P_INIT(bypass);
 }
 
+
+#define AUDIO_SAMPLE_MAX 100.0
+#define AUDIO_SAMPLE_MIN -100.0
+#define AUDIO_SAMPLE_CLIP(Samp) \
+  if     (Samp<AUDIO_SAMPLE_MIN) {Samp=AUDIO_SAMPLE_MIN;} \
+  else if(Samp>AUDIO_SAMPLE_MAX) {Samp=AUDIO_SAMPLE_MAX;}
+
 audio_sample_t* LowPassNode::get_buffer(nframes_t nframes)
 {
   audio_sample_t* in = this->source->get_buffer(nframes);
@@ -32,6 +39,7 @@ audio_sample_t* LowPassNode::get_buffer(nframes_t nframes)
   for(int i=0; i<nframes; i++)
   {
     this->last = in[i] + this->last;
+    AUDIO_SAMPLE_CLIP(this->last);
     this->buf.push_back(this->last*0.01);
   }
   
