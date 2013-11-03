@@ -44,7 +44,7 @@ NodeNetwork.activate Jack::Client.new
 sleep 0.2
 
 o = JackOutputNode.new
-o.source = GainNode.new
+o.source = LowPassNode.new
 o.source.source = JackInputNode.new
 
 sleep 1.0
