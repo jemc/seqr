@@ -57,5 +57,6 @@ void Init_Node()
   Init_JackInputNode();
   Init_JackOutputNode();
   Init_GainNode();
+  Init_LowPassNode();
 }
 

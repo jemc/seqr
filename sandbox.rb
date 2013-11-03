@@ -39,16 +39,10 @@ module Seqr
   end
 end
 
-
 NodeNetwork.activate Jack::Client.new
-sleep 0.2
 
 o = JackOutputNode.new
 o.source = LowPassNode.new
 o.source.source = JackInputNode.new
 
-sleep 1.0
-o.source.gain = 3.0
-sleep 1.0
-o.source.gain = -1.0
-sleep 1.0
+sleep 2
