@@ -45,4 +45,7 @@ o = JackOutputNode.new
 o.source = LowPassNode.new
 o.source.source = JackInputNode.new
 
+o.source.bypass = true
 sleep 2
+o.source.bypass = false
+sleep

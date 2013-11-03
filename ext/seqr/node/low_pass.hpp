@@ -7,25 +7,25 @@ class LowPassNode : public Node {
   public:
     LowPassNode();
     
-    CPP2RB_P_MEMBER(gain, double, 1.0);
+    CPP2RB_P_MEMBER(bypass, bool, false);
     
     audio_sample_t last = 0.0;
     
     virtual audio_sample_t* get_buffer(nframes_t nframes);
 };
 CPP2RB_W_FUNCS(LowPassNode);
-CPP2RB_P_FUNCS(LowPassNode, gain, NUM2DBL);
+CPP2RB_P_FUNCS(LowPassNode, bypass, RTEST);
 
 
 LowPassNode::LowPassNode()
 {
-  CPP2RB_P_INIT(gain);
+  CPP2RB_P_INIT(bypass);
 }
 
 audio_sample_t* LowPassNode::get_buffer(nframes_t nframes)
 {
   audio_sample_t* in = this->source->get_buffer(nframes);
-  if(!in) return NULL;
+  if(this->bypass || !in) return in;
   
   this->buf.clear();
   
@@ -47,5 +47,5 @@ void Init_LowPassNode()
   rb_LowPassNode = rb_define_class_under(rb_ThisModule, "LowPassNode", rb_Node);
   
   CPP2RB_W_FUNCS_REG(LowPassNode);
-  CPP2RB_P_FUNCS_REG(LowPassNode, gain, "gain");
+  CPP2RB_P_FUNCS_REG(LowPassNode, bypass, "bypass");
 }
