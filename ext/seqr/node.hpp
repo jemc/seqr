@@ -9,10 +9,8 @@ class Node
     std::vector<audio_sample_t> buf;
   
   public:
-    Node* source;
-    VALUE rb_source;
+    CPP2RB_P_MEMBER(source, Node*, NULL);
     
-    Node();
     virtual void cpp2rb_mark();
     
     virtual audio_sample_t* get_buffer(nframes_t nframes) {};
@@ -20,41 +18,16 @@ class Node
     virtual int activate(VALUE rb_jclient)  {};
 };
 CPP2RB_W_FUNCS(Node);
+CPP2RB_P_FUNCS(Node, source, Node_w_get);
 
 
 ///
 // C++ methods
 
-Node::Node()
-{
-  this->source = NULL;
-  this->rb_source = Qnil;
-}
-
 // Garbage collection marker
 void Node::cpp2rb_mark()
 {
   rb_gc_mark(this->rb_source);
-}
-
-
-///
-// Ruby-accessible C methods
-
-extern "C" VALUE Node_m_source(VALUE self)
-{
-  return Node_w_get(self)->rb_source;
-}
-
-extern "C" VALUE Node_m_source_setter(VALUE self, VALUE node) {
-  Node* c_self = Node_w_get(self);
-  
-  c_self->rb_source = node;
-  
-  if(node==Qnil) c_self->source = NULL;
-  else c_self->source = Node_w_get(node);
-  
-  return node;
 }
 
 
@@ -78,11 +51,7 @@ void Init_Node()
   rb_Node = rb_define_class_under(rb_ThisModule, "Node", rb_cObject);
   
   CPP2RB_W_FUNCS_REG(Node);
-  
-  rb_define_method(rb_Node, "source",
-    RUBY_METHOD_FUNC (Node_m_source),        0);
-  rb_define_method(rb_Node, "source=",
-    RUBY_METHOD_FUNC (Node_m_source_setter), 1);
+  CPP2RB_P_FUNCS_REG(Node, source, "source");
   
   ///
   // Init children
