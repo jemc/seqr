@@ -6,6 +6,7 @@ VALUE rb_CausalFilterNode = Qnil;
 class CausalFilterNode : public Node {
   protected:
     std::vector<audio_sample_t> last_in;
+    std::vector<audio_sample_t> last_out;
     
   public:
     CausalFilterNode();
@@ -70,6 +71,18 @@ audio_sample_t* CausalFilterNode::get_buffer(nframes_t nframes)
       samp += last * ff_coeffs[j];
     }
     
+    // Add in feedback components
+    for(int j=1; j<this->fb_coeffs.size(); j++)
+    {
+      if(i-j >= 0)
+        last = buf[i-j];
+      else if(this->last_out.size()+i >= j)
+        last = this->last_out[this->last_out.size()+i-j];
+      else
+        last = 0.0;
+      samp -= last * fb_coeffs[j];
+    }
+    
     // Clip the sample and push it into the buffer
     AUDIO_SAMPLE_CLIP(samp);
     this->buf.push_back(samp*this->gain);
@@ -79,6 +92,11 @@ audio_sample_t* CausalFilterNode::get_buffer(nframes_t nframes)
   this->last_in.clear();
   for(int i=0; i<nframes; i++)
     this->last_in.push_back(in[i]);
+  
+  // Remember the last output buffer
+  this->last_out.clear();
+  for(int i=0; i<nframes; i++)
+    this->last_out.push_back(this->buf[i]);
   
   // Return output buffer pointer
   return this->buf.data();
