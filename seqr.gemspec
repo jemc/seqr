@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.require_path  = 'lib'
   
   s.homepage      = 'https://github.com/jemc/seqr/'
-  s.licenses      = "MIT"
+  s.licenses      = "All rights reserved"
   
   s.add_development_dependency('rake')
   s.add_development_dependency('rake-compiler')
