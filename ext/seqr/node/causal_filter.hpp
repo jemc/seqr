@@ -77,15 +77,9 @@ audio_sample_t* CausalFilterNode::get_buffer(nframes_t nframes)
     this->buf.push_back(samp*this->gain);
   }
   
-  // Remember the last input buffer
-  this->last_in.clear();
-  for(int i=0; i<nframes; i++)
-    this->last_in.push_back(in[i]);
-  
-  // Remember the last output buffer
-  this->last_out.clear();
-  for(int i=0; i<nframes; i++)
-    this->last_out.push_back(this->buf[i]);
+  // Remember the last input and output buffer
+  this->last_in.assign(in, in+sizeof(audio_sample_t)*nframes);
+  this->last_out = this->buf;
   
   // Return output buffer pointer
   return this->buf.data();

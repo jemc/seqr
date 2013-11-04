@@ -51,9 +51,9 @@ o.source.gain = 0.1
 
 while true
   p o.source.fb_coeffs = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-  # o.source.ff_coeffs = [1.0]
+    o.source.ff_coeffs = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
   sleep 0.2
   p o.source.fb_coeffs = [0.25, 0.75]
-  # o.source.ff_coeffs = [1.0]
+    o.source.ff_coeffs = [0.25, 0.75]
   sleep 0.2
 end
