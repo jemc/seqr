@@ -72,10 +72,15 @@ extern "C" VALUE Kls ## _m_ ## ParamName ## _setter_private(Kls* c_self, VALUE n
 extern "C" VALUE Kls ## _m_ ## ParamName ## _setter(VALUE self, VALUE new_val) \
 { return Kls ## _m_ ## ParamName ## _setter_private(Kls ## _w_get(self), new_val); }
 
+// Use anywhere to set the value of a param 
+//   while maintaining Ruby/C++ synchronization for the param
+#define CPP2RB_P_SET(Kls, Instance, ParamName, Value) \
+  Kls ## _m_ ## ParamName ## _setter_private(Instance, Value);
+
 // Use in object constructor to register params as part of Cpp2Rb object
 #define CPP2RB_P_INIT(Kls, ParamName, InitialValue) \
   this->rb_param_list.push_back(&rb_ ## ParamName); \
-  Kls ## _m_ ## ParamName ## _setter_private(this, InitialValue);
+  CPP2RB_P_SET(Kls, this, ParamName, InitialValue);
 
 // Use in object constructor to register params as part of Cpp2Rb object
 #define CPP2RB_P_INIT_BACKEND(Kls, ParamName, InitialValue, InitialCValue) \
