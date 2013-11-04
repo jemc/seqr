@@ -48,8 +48,10 @@ o.source.source = JackInputNode.new
 while true
   o.source.bypass = false
   p o.source.ff_coeffs = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
+  o.source.fb_coeffs = [1.0]
   sleep 0.2
   o.source.bypass = false
   p o.source.ff_coeffs = [0.25, 0.75]
+  o.source.fb_coeffs = [1.0]
   sleep 0.2
 end

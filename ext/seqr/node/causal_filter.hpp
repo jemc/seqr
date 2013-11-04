@@ -12,6 +12,7 @@ class CausalFilterNode : public Node {
     
     CPP2RB_P_MEMBER(bypass, bool, false);
     CPP2RB_P_MEMBER(ff_coeffs, std::vector<double>, {1.0});
+    CPP2RB_P_MEMBER(fb_coeffs, std::vector<double>, {1.0});
     
     virtual audio_sample_t* get_buffer(nframes_t nframes);
 };
@@ -29,12 +30,14 @@ std::vector<double> rb_ary_to_vec_double(VALUE ary)
 }
 
 CPP2RB_P_FUNCS(CausalFilterNode, ff_coeffs, rb_ary_to_vec_double);
+CPP2RB_P_FUNCS(CausalFilterNode, fb_coeffs, rb_ary_to_vec_double);
 
 
 CausalFilterNode::CausalFilterNode()
 {
   CPP2RB_P_INIT(bypass);
   CPP2RB_P_INIT(ff_coeffs);
+  CPP2RB_P_INIT(fb_coeffs);
 }
 
 audio_sample_t* CausalFilterNode::get_buffer(nframes_t nframes)
@@ -89,4 +92,5 @@ void Init_CausalFilterNode()
   CPP2RB_W_FUNCS_REG(CausalFilterNode);
   CPP2RB_P_FUNCS_REG(CausalFilterNode, bypass, "bypass");
   CPP2RB_P_FUNCS_REG(CausalFilterNode, ff_coeffs, "ff_coeffs");
+  CPP2RB_P_FUNCS_REG(CausalFilterNode, fb_coeffs, "fb_coeffs");
 }
