@@ -11,16 +11,30 @@ class LowPassNode : public Node {
     LowPassNode();
     
     CPP2RB_P_MEMBER(bypass, bool, false);
+    CPP2RB_P_MEMBER(coeffs, std::vector<double>, {1.0});
     
     virtual audio_sample_t* get_buffer(nframes_t nframes);
 };
 CPP2RB_W_FUNCS(LowPassNode);
 CPP2RB_P_FUNCS(LowPassNode, bypass, RTEST);
 
+std::vector<double> rb_ary_to_vec_double(VALUE ary)
+{
+  std::vector<double> vec;
+  
+  for(int i=0; i<RARRAY_LEN(ary); i++)
+    vec.push_back(NUM2DBL(rb_ary_entry(ary, i)));
+  
+  return vec;
+}
+
+CPP2RB_P_FUNCS(LowPassNode, coeffs, rb_ary_to_vec_double);
+
 
 LowPassNode::LowPassNode()
 {
   CPP2RB_P_INIT(bypass);
+  CPP2RB_P_INIT(coeffs);
 }
 
 audio_sample_t* LowPassNode::get_buffer(nframes_t nframes)
@@ -28,22 +42,26 @@ audio_sample_t* LowPassNode::get_buffer(nframes_t nframes)
   audio_sample_t* in = this->source->get_buffer(nframes);
   if(this->bypass || !in) return in;
   
-  audio_sample_t last = 0.0;
-  audio_sample_t samp = 0.0;
+  audio_sample_t last;
+  audio_sample_t samp;
   
   this->buf.clear();
   for(int i=0; i<nframes; i++)
-  { 
-    if(i-1 >= 0)
-      last = in[i-1];
-    else if(this->last_in.size()+i >= 1)
-      last = this->last_in[this->last_in.size()+i-1];
-    else
-      last = 0.0;
+  {
+    samp = 0.0;
+    for(int j=0; j<this->coeffs.size(); j++)
+    {
+      if(i-j >= 0)
+        last = in[i-j];
+      else if(this->last_in.size()+i >= j)
+        last = this->last_in[this->last_in.size()+i-j];
+      else
+        last = 0.0;
+      samp += last * coeffs[j];
+    }
     
-    samp = in[i] + last;
     AUDIO_SAMPLE_CLIP(samp);
-    this->buf.push_back(samp*0.01);
+    this->buf.push_back(samp*0.1);
   }
   
   this->last_in.clear();
@@ -63,4 +81,5 @@ void Init_LowPassNode()
   
   CPP2RB_W_FUNCS_REG(LowPassNode);
   CPP2RB_P_FUNCS_REG(LowPassNode, bypass, "bypass");
+  CPP2RB_P_FUNCS_REG(LowPassNode, coeffs, "coeffs");
 }
