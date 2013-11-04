@@ -20,7 +20,7 @@ class CausalFilterNode : public Node {
 };
 CPP2RB_W_FUNCS(CausalFilterNode);
 CPP2RB_P_FUNCS(CausalFilterNode, bypass,    RTEST);
-CPP2RB_P_FUNCS(CausalFilterNode, gain,      NUM2DBL);
+CPP2RB_P_FUNCS(CausalFilterNode, gain,      CPP2RB_VALUE_TO_DOUBLE);
 CPP2RB_P_FUNCS(CausalFilterNode, ff_coeffs, CPP2RB_VALUE_TO_VEC_DOUBLE);
 CPP2RB_P_FUNCS(CausalFilterNode, fb_coeffs, CPP2RB_VALUE_TO_VEC_DOUBLE);
 

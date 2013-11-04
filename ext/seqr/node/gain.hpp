@@ -12,7 +12,7 @@ class GainNode : public Node {
     virtual audio_sample_t* get_buffer(nframes_t nframes);
 };
 CPP2RB_W_FUNCS(GainNode);
-CPP2RB_P_FUNCS(GainNode, gain, NUM2DBL);
+CPP2RB_P_FUNCS(GainNode, gain, CPP2RB_VALUE_TO_DOUBLE);
 
 
 GainNode::GainNode()

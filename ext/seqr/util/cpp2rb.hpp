@@ -95,6 +95,8 @@ extern "C" VALUE Kls ## _m_ ## ParamName ## _setter(VALUE self, VALUE new_val) \
 ///
 // Value to C++ type conversion functions / macros
 
+#define CPP2RB_VALUE_TO_DOUBLE    NUM2DBL
+
 std::vector<double> CPP2RB_VALUE_TO_VEC_DOUBLE(VALUE ary)
 {
   std::vector<double> vec;
