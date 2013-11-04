@@ -17,7 +17,7 @@ CPP2RB_P_FUNCS(GainNode, gain, CPP2RB_VALUE_TO_DOUBLE);
 
 GainNode::GainNode()
 {
-  CPP2RB_P_INIT(GainNode, gain, DBL2NUM(1.0));
+  CPP2RB_P_INIT(GainNode, gain, CPP2RB_VALUE_FROM_DOUBLE(1.0));
 }
 
 audio_sample_t* GainNode::get_buffer(nframes_t nframes)

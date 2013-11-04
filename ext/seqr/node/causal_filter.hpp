@@ -28,7 +28,7 @@ CPP2RB_P_FUNCS(CausalFilterNode, fb_coeffs, CPP2RB_VALUE_TO_VEC_DOUBLE);
 CausalFilterNode::CausalFilterNode()
 {
   CPP2RB_P_INIT(CausalFilterNode, bypass, CPP2RB_VALUE_FROM_BOOL(false));
-  CPP2RB_P_INIT(CausalFilterNode, gain,   DBL2NUM(1.0));
+  CPP2RB_P_INIT(CausalFilterNode, gain,   CPP2RB_VALUE_FROM_DOUBLE(1.0));
   CPP2RB_P_INIT(CausalFilterNode, ff_coeffs, rb_ary_new3(1, DBL2NUM(1.0)));
   CPP2RB_P_INIT(CausalFilterNode, fb_coeffs, rb_ary_new3(1, DBL2NUM(1.0)));
 }

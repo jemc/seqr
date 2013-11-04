@@ -113,3 +113,4 @@ std::vector<double> CPP2RB_VALUE_TO_VEC_DOUBLE(VALUE ary)
 // Ruby VALUE from C++ type conversion functions / macros
 
 #define CPP2RB_VALUE_FROM_BOOL(x)   (x ? Qtrue : Qfalse)
+#define CPP2RB_VALUE_FROM_DOUBLE    DBL2NUM
