@@ -37,7 +37,7 @@ Node::Node()
 #include "node/jack_input.hpp"
 #include "node/jack_output.hpp"
 #include "node/gain.hpp"
-#include "node/low_pass.hpp"
+#include "node/causal_filter.hpp"
 
 
 ///
@@ -57,6 +57,6 @@ void Init_Node()
   Init_JackInputNode();
   Init_JackOutputNode();
   Init_GainNode();
-  Init_LowPassNode();
+  Init_CausalFilterNode();
 }
 

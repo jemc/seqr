@@ -1,22 +1,22 @@
 
 ///
-// LowPassNode implements out(n) = in(n) + in(n-1)
+// CausalFilterNode
 
-VALUE rb_LowPassNode = Qnil;
-class LowPassNode : public Node {
+VALUE rb_CausalFilterNode = Qnil;
+class CausalFilterNode : public Node {
   protected:
     std::vector<audio_sample_t> last_in;
     
   public:
-    LowPassNode();
+    CausalFilterNode();
     
     CPP2RB_P_MEMBER(bypass, bool, false);
     CPP2RB_P_MEMBER(coeffs, std::vector<double>, {1.0});
     
     virtual audio_sample_t* get_buffer(nframes_t nframes);
 };
-CPP2RB_W_FUNCS(LowPassNode);
-CPP2RB_P_FUNCS(LowPassNode, bypass, RTEST);
+CPP2RB_W_FUNCS(CausalFilterNode);
+CPP2RB_P_FUNCS(CausalFilterNode, bypass, RTEST);
 
 std::vector<double> rb_ary_to_vec_double(VALUE ary)
 {
@@ -28,16 +28,16 @@ std::vector<double> rb_ary_to_vec_double(VALUE ary)
   return vec;
 }
 
-CPP2RB_P_FUNCS(LowPassNode, coeffs, rb_ary_to_vec_double);
+CPP2RB_P_FUNCS(CausalFilterNode, coeffs, rb_ary_to_vec_double);
 
 
-LowPassNode::LowPassNode()
+CausalFilterNode::CausalFilterNode()
 {
   CPP2RB_P_INIT(bypass);
   CPP2RB_P_INIT(coeffs);
 }
 
-audio_sample_t* LowPassNode::get_buffer(nframes_t nframes)
+audio_sample_t* CausalFilterNode::get_buffer(nframes_t nframes)
 {
   audio_sample_t* in = this->source->get_buffer(nframes);
   if(this->bypass || !in) return in;
@@ -75,11 +75,11 @@ audio_sample_t* LowPassNode::get_buffer(nframes_t nframes)
 ///
 // Bind to Ruby object
 
-void Init_LowPassNode()
+void Init_CausalFilterNode()
 {
-  rb_LowPassNode = rb_define_class_under(rb_ThisModule, "LowPassNode", rb_Node);
+  rb_CausalFilterNode = rb_define_class_under(rb_ThisModule, "CausalFilterNode", rb_Node);
   
-  CPP2RB_W_FUNCS_REG(LowPassNode);
-  CPP2RB_P_FUNCS_REG(LowPassNode, bypass, "bypass");
-  CPP2RB_P_FUNCS_REG(LowPassNode, coeffs, "coeffs");
+  CPP2RB_W_FUNCS_REG(CausalFilterNode);
+  CPP2RB_P_FUNCS_REG(CausalFilterNode, bypass, "bypass");
+  CPP2RB_P_FUNCS_REG(CausalFilterNode, coeffs, "coeffs");
 }

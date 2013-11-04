@@ -42,7 +42,7 @@ end
 NodeNetwork.activate Jack::Client.new
 
 o = JackOutputNode.new
-o.source = LowPassNode.new
+o.source = CausalFilterNode.new
 o.source.source = JackInputNode.new
 
 while true
