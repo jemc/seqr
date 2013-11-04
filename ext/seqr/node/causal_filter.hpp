@@ -11,7 +11,7 @@ class CausalFilterNode : public Node {
     CausalFilterNode();
     
     CPP2RB_P_MEMBER(bypass, bool, false);
-    CPP2RB_P_MEMBER(coeffs, std::vector<double>, {1.0});
+    CPP2RB_P_MEMBER(ff_coeffs, std::vector<double>, {1.0});
     
     virtual audio_sample_t* get_buffer(nframes_t nframes);
 };
@@ -28,28 +28,32 @@ std::vector<double> rb_ary_to_vec_double(VALUE ary)
   return vec;
 }
 
-CPP2RB_P_FUNCS(CausalFilterNode, coeffs, rb_ary_to_vec_double);
+CPP2RB_P_FUNCS(CausalFilterNode, ff_coeffs, rb_ary_to_vec_double);
 
 
 CausalFilterNode::CausalFilterNode()
 {
   CPP2RB_P_INIT(bypass);
-  CPP2RB_P_INIT(coeffs);
+  CPP2RB_P_INIT(ff_coeffs);
 }
 
 audio_sample_t* CausalFilterNode::get_buffer(nframes_t nframes)
 {
+  // Get the input buffer pointer
   audio_sample_t* in = this->source->get_buffer(nframes);
   if(this->bypass || !in) return in;
   
   audio_sample_t last;
   audio_sample_t samp;
   
+  // Clear the buffer and fill each input sample
   this->buf.clear();
   for(int i=0; i<nframes; i++)
   {
     samp = 0.0;
-    for(int j=0; j<this->coeffs.size(); j++)
+    
+    // Add in feedforward components
+    for(int j=0; j<this->ff_coeffs.size(); j++)
     {
       if(i-j >= 0)
         last = in[i-j];
@@ -57,17 +61,20 @@ audio_sample_t* CausalFilterNode::get_buffer(nframes_t nframes)
         last = this->last_in[this->last_in.size()+i-j];
       else
         last = 0.0;
-      samp += last * coeffs[j];
+      samp += last * ff_coeffs[j];
     }
     
+    // Clip the sample and push it into the buffer
     AUDIO_SAMPLE_CLIP(samp);
     this->buf.push_back(samp*0.1);
   }
   
+  // Remember the last input buffer
   this->last_in.clear();
   for(int i=0; i<nframes; i++)
     this->last_in.push_back(in[i]);
   
+  // Return output buffer pointer
   return this->buf.data();
 }
 
@@ -81,5 +88,5 @@ void Init_CausalFilterNode()
   
   CPP2RB_W_FUNCS_REG(CausalFilterNode);
   CPP2RB_P_FUNCS_REG(CausalFilterNode, bypass, "bypass");
-  CPP2RB_P_FUNCS_REG(CausalFilterNode, coeffs, "coeffs");
+  CPP2RB_P_FUNCS_REG(CausalFilterNode, ff_coeffs, "ff_coeffs");
 }
