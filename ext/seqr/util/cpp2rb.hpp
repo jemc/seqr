@@ -55,21 +55,33 @@ extern "C" Kls* Kls ## _w_get(VALUE self) \
 std::mutex CPP2RB_P_LOCK;
 
 // Use in a class definition to add the appropriate members
-#define CPP2RB_P_MEMBER(ParamName, TypeName, InitialValue) \
+#define CPP2RB_P_MEMBER(TypeName, ParamName) \
   VALUE rb_ ## ParamName = Qnil; \
-  TypeName ParamName = InitialValue;
+  TypeName ParamName;
 
 // Use to define the ruby interfacing getter/setter funcs
 #define CPP2RB_P_FUNCS(Kls, ParamName, TypeFunc) \
 extern "C" VALUE Kls ## _m_ ## ParamName(VALUE self) \
 { return Kls ## _w_get(self)->rb_ ## ParamName; } \
-extern "C" VALUE Kls ## _m_ ## ParamName ## _setter(VALUE self, VALUE new_val) \
-{ Kls* c_self = Kls ## _w_get(self); \
-  c_self->rb_ ## ParamName = new_val; \
+extern "C" VALUE Kls ## _m_ ## ParamName ## _setter_private(Kls* c_self, VALUE new_val) \
+{ c_self->rb_ ## ParamName = new_val; \
   CPP2RB_P_LOCK.lock(); \
   c_self->ParamName = TypeFunc(new_val); \
   CPP2RB_P_LOCK.unlock(); \
-  return new_val; }
+  return new_val; } \
+extern "C" VALUE Kls ## _m_ ## ParamName ## _setter(VALUE self, VALUE new_val) \
+{ return Kls ## _m_ ## ParamName ## _setter_private(Kls ## _w_get(self), new_val); }
+
+// Use in object constructor to register params as part of Cpp2Rb object
+#define CPP2RB_P_INIT(Kls, ParamName, InitialValue) \
+  this->rb_param_list.push_back(&rb_ ## ParamName); \
+  Kls ## _m_ ## ParamName ## _setter_private(this, InitialValue);
+
+// Use in object constructor to register params as part of Cpp2Rb object
+#define CPP2RB_P_INIT_BACKEND(Kls, ParamName, InitialValue, InitialCValue) \
+  this->rb_param_list.push_back(&rb_ ## ParamName); \
+  this->rb_ ## ParamName = InitialValue; \
+  this->ParamName        = InitialCValue;
 
 // Use in Init function to register the funcs with Ruby
 #define CPP2RB_P_FUNCS_REG(Kls, ParamName, RubyParamName) \
@@ -78,9 +90,6 @@ extern "C" VALUE Kls ## _m_ ## ParamName ## _setter(VALUE self, VALUE new_val) \
   rb_define_method(rb_ ## Kls, RubyParamName "=", \
          RUBY_METHOD_FUNC(Kls ## _m_ ## ParamName ## _setter), 1);
 
-// Use in object constructor to register params as part of Cpp2Rb object
-#define CPP2RB_P_INIT(ParamName) \
-  this->rb_param_list.push_back(&rb_ ## ParamName);
 
 
 ///

@@ -11,7 +11,7 @@ class Node : public Cpp2Rb
   public:
     Node();
     
-    CPP2RB_P_MEMBER(source, Node*, NULL);
+    CPP2RB_P_MEMBER(Node*, source);
     
     virtual audio_sample_t* get_buffer(nframes_t nframes) {};
     virtual int process (nframes_t nframes) {};
@@ -23,7 +23,7 @@ CPP2RB_P_FUNCS(Node, source, Node_w_get);
 
 Node::Node()
 {
-  CPP2RB_P_INIT(source);
+  CPP2RB_P_INIT_BACKEND(Node, source, Qnil, NULL);
 }
 
 

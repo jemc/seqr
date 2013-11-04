@@ -1,5 +1,5 @@
 
-require 'pry'
+# require 'pry'
 
 at_exit {`killall jackd`}
 

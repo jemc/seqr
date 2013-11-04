@@ -33,6 +33,7 @@ JackOutputNode::~JackOutputNode()
 int JackOutputNode::process(nframes_t nframes)
 {
   if(!this->jack_is_ready()) return 0;
+  if(!this->source) return 0;
   
   audio_sample_t *out = (audio_sample_t*)jack_port_get_buffer(this->port, nframes);
   audio_sample_t *in  = (audio_sample_t*)this->source->get_buffer(nframes);

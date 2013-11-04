@@ -11,30 +11,32 @@ class CausalFilterNode : public Node {
   public:
     CausalFilterNode();
     
-    CPP2RB_P_MEMBER(bypass, bool, false);
-    CPP2RB_P_MEMBER(gain, double, 1.0);
-    CPP2RB_P_MEMBER(ff_coeffs, std::vector<double>, {1.0});
-    CPP2RB_P_MEMBER(fb_coeffs, std::vector<double>, {1.0});
+    CPP2RB_P_MEMBER(bool,                bypass);
+    CPP2RB_P_MEMBER(double,              gain);
+    CPP2RB_P_MEMBER(std::vector<double>, ff_coeffs);
+    CPP2RB_P_MEMBER(std::vector<double>, fb_coeffs);
     
     virtual audio_sample_t* get_buffer(nframes_t nframes);
 };
 CPP2RB_W_FUNCS(CausalFilterNode);
-CPP2RB_P_FUNCS(CausalFilterNode, bypass, RTEST);
-CPP2RB_P_FUNCS(CausalFilterNode, gain, NUM2DBL);
+CPP2RB_P_FUNCS(CausalFilterNode, bypass,    RTEST);
+CPP2RB_P_FUNCS(CausalFilterNode, gain,      NUM2DBL);
 CPP2RB_P_FUNCS(CausalFilterNode, ff_coeffs, CPP2RB_VALUE_TO_VEC_DOUBLE);
 CPP2RB_P_FUNCS(CausalFilterNode, fb_coeffs, CPP2RB_VALUE_TO_VEC_DOUBLE);
 
 
 CausalFilterNode::CausalFilterNode()
 {
-  CPP2RB_P_INIT(bypass);
-  CPP2RB_P_INIT(gain);
-  CPP2RB_P_INIT(ff_coeffs);
-  CPP2RB_P_INIT(fb_coeffs);
+  CPP2RB_P_INIT(CausalFilterNode, bypass, Qfalse);
+  CPP2RB_P_INIT(CausalFilterNode, gain,   DBL2NUM(1.0));
+  CPP2RB_P_INIT(CausalFilterNode, ff_coeffs, rb_ary_new3(1, DBL2NUM(1.0)));
+  CPP2RB_P_INIT(CausalFilterNode, fb_coeffs, rb_ary_new3(1, DBL2NUM(1.0)));
 }
 
 audio_sample_t* CausalFilterNode::get_buffer(nframes_t nframes)
 {
+  if(!this->source) return NULL;
+  
   // Get the input buffer pointer
   audio_sample_t* in = this->source->get_buffer(nframes);
   if(this->bypass || !in) return in;

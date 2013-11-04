@@ -7,7 +7,7 @@ class GainNode : public Node {
   public:
     GainNode();
     
-    CPP2RB_P_MEMBER(gain, double, 1.0);
+    CPP2RB_P_MEMBER(double, gain);
     
     virtual audio_sample_t* get_buffer(nframes_t nframes);
 };
@@ -17,11 +17,13 @@ CPP2RB_P_FUNCS(GainNode, gain, NUM2DBL);
 
 GainNode::GainNode()
 {
-  CPP2RB_P_INIT(gain);
+  CPP2RB_P_INIT(GainNode, gain, DBL2NUM(1.0));
 }
 
 audio_sample_t* GainNode::get_buffer(nframes_t nframes)
 {
+  if(!this->source) return NULL;
+  
   audio_sample_t* in = this->source->get_buffer(nframes);
   if(!in) return NULL;
   
