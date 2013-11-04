@@ -50,27 +50,17 @@ audio_sample_t* CausalFilterNode::get_buffer(nframes_t nframes)
     
     // Add in feedforward components
     for(int j=0; j<this->ff_coeffs.size(); j++)
-    {
       if(i-j >= 0)
-        last = in[i-j];
+        samp += ff_coeffs[j] * in[i-j];
       else if(this->last_in.size()+i >= j)
-        last = this->last_in[this->last_in.size()+i-j];
-      else
-        last = 0.0;
-      samp += last * ff_coeffs[j];
-    }
+        samp += ff_coeffs[j] * this->last_in[this->last_in.size()+i-j];
     
     // Add in feedback components
     for(int j=1; j<this->fb_coeffs.size(); j++)
-    {
       if(i-j >= 0)
-        last = buf[i-j];
+        samp -= fb_coeffs[j] * buf[i-j];
       else if(this->last_out.size()+i >= j)
-        last = this->last_out[this->last_out.size()+i-j];
-      else
-        last = 0.0;
-      samp -= last * fb_coeffs[j];
-    }
+        samp -= fb_coeffs[j] * this->last_out[this->last_out.size()+i-j];
     
     // Clip the sample and push it into the buffer
     AUDIO_SAMPLE_CLIP(samp);
