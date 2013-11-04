@@ -42,7 +42,7 @@ audio_sample_t* CausalFilterNode::get_buffer(nframes_t nframes)
   audio_sample_t last;
   audio_sample_t samp;
   
-  // Clear the buffer and fill each input sample
+  // Clear the buffer and fill each output sample
   this->buf.clear();
   for(int i=0; i<nframes; i++)
   {

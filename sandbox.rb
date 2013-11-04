@@ -45,15 +45,16 @@ o = JackOutputNode.new
 o.source = CausalFilterNode.new
 o.source.source = JackInputNode.new
 
+filter = o.source
 
-o.source.bypass = false
-o.source.gain = 0.1
+filter.bypass = false
+filter.gain = 0.1
 
 while true
-  p o.source.fb_coeffs = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-    o.source.ff_coeffs = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
+  p filter.fb_coeffs = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+    filter.ff_coeffs = [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
   sleep 0.2
-  p o.source.fb_coeffs = [0.25, 0.75]
-    o.source.ff_coeffs = [0.25, 0.75]
+  p filter.fb_coeffs = [0.25, 0.75]
+    filter.ff_coeffs = [0.25, 0.75]
   sleep 0.2
 end
