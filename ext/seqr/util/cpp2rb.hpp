@@ -52,6 +52,8 @@ extern "C" Kls* Kls ## _w_get(VALUE self) \
 ///
 // Ruby-accessible C++ parameter creator macros
 
+std::mutex CPP2RB_P_LOCK;
+
 // Use in a class definition to add the appropriate members
 #define CPP2RB_P_MEMBER(ParamName, TypeName, InitialValue) \
   VALUE rb_ ## ParamName = Qnil; \
@@ -64,7 +66,9 @@ extern "C" VALUE Kls ## _m_ ## ParamName(VALUE self) \
 extern "C" VALUE Kls ## _m_ ## ParamName ## _setter(VALUE self, VALUE new_val) \
 { Kls* c_self = Kls ## _w_get(self); \
   c_self->rb_ ## ParamName = new_val; \
+  CPP2RB_P_LOCK.lock(); \
   c_self->ParamName = TypeFunc(new_val); \
+  CPP2RB_P_LOCK.unlock(); \
   return new_val; }
 
 // Use in Init function to register the funcs with Ruby

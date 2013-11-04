@@ -46,8 +46,10 @@ int NodeNetwork::main_process(nframes_t nframes, void* arg)
   
   for(int ii=0; ii < final_nodes.size(); ii++)
   {
+    CPP2RB_P_LOCK.lock();
     result=(final_nodes[ii]->process(nframes));
     if(result) return result;
+    CPP2RB_P_LOCK.unlock();
   }
   return 0;
 }
