@@ -19,7 +19,7 @@ class CausalFilterNode : public Node {
     virtual audio_sample_t* get_buffer(nframes_t nframes);
 };
 CPP2RB_W_FUNCS(CausalFilterNode);
-CPP2RB_P_FUNCS(CausalFilterNode, bypass,    RTEST);
+CPP2RB_P_FUNCS(CausalFilterNode, bypass,    CPP2RB_VALUE_TO_BOOL);
 CPP2RB_P_FUNCS(CausalFilterNode, gain,      CPP2RB_VALUE_TO_DOUBLE);
 CPP2RB_P_FUNCS(CausalFilterNode, ff_coeffs, CPP2RB_VALUE_TO_VEC_DOUBLE);
 CPP2RB_P_FUNCS(CausalFilterNode, fb_coeffs, CPP2RB_VALUE_TO_VEC_DOUBLE);
@@ -27,7 +27,7 @@ CPP2RB_P_FUNCS(CausalFilterNode, fb_coeffs, CPP2RB_VALUE_TO_VEC_DOUBLE);
 
 CausalFilterNode::CausalFilterNode()
 {
-  CPP2RB_P_INIT(CausalFilterNode, bypass, Qfalse);
+  CPP2RB_P_INIT(CausalFilterNode, bypass, CPP2RB_VALUE_FROM_BOOL(false));
   CPP2RB_P_INIT(CausalFilterNode, gain,   DBL2NUM(1.0));
   CPP2RB_P_INIT(CausalFilterNode, ff_coeffs, rb_ary_new3(1, DBL2NUM(1.0)));
   CPP2RB_P_INIT(CausalFilterNode, fb_coeffs, rb_ary_new3(1, DBL2NUM(1.0)));
