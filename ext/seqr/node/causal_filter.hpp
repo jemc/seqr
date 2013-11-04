@@ -21,19 +21,8 @@ class CausalFilterNode : public Node {
 CPP2RB_W_FUNCS(CausalFilterNode);
 CPP2RB_P_FUNCS(CausalFilterNode, bypass, RTEST);
 CPP2RB_P_FUNCS(CausalFilterNode, gain, NUM2DBL);
-
-std::vector<double> rb_ary_to_vec_double(VALUE ary)
-{
-  std::vector<double> vec;
-  
-  for(int i=0; i<RARRAY_LEN(ary); i++)
-    vec.push_back(NUM2DBL(rb_ary_entry(ary, i)));
-  
-  return vec;
-}
-
-CPP2RB_P_FUNCS(CausalFilterNode, ff_coeffs, rb_ary_to_vec_double);
-CPP2RB_P_FUNCS(CausalFilterNode, fb_coeffs, rb_ary_to_vec_double);
+CPP2RB_P_FUNCS(CausalFilterNode, ff_coeffs, CPP2RB_VALUE_TO_VEC_DOUBLE);
+CPP2RB_P_FUNCS(CausalFilterNode, fb_coeffs, CPP2RB_VALUE_TO_VEC_DOUBLE);
 
 
 CausalFilterNode::CausalFilterNode()

@@ -82,3 +82,16 @@ extern "C" VALUE Kls ## _m_ ## ParamName ## _setter(VALUE self, VALUE new_val) \
 #define CPP2RB_P_INIT(ParamName) \
   this->rb_param_list.push_back(&rb_ ## ParamName);
 
+
+///
+// Value to C++ type conversion functions / macros
+
+std::vector<double> CPP2RB_VALUE_TO_VEC_DOUBLE(VALUE ary)
+{
+  std::vector<double> vec;
+  
+  for(int i=0; i<RARRAY_LEN(ary); i++)
+    vec.push_back(NUM2DBL(rb_ary_entry(ary, i)));
+  
+  return vec;
+}
