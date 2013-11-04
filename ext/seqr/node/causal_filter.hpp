@@ -27,10 +27,12 @@ CPP2RB_P_FUNCS(CausalFilterNode, fb_coeffs, CPP2RB_VALUE_TO_VEC_DOUBLE);
 
 CausalFilterNode::CausalFilterNode()
 {
-  CPP2RB_P_INIT(CausalFilterNode, bypass, CPP2RB_VALUE_FROM_BOOL(false));
-  CPP2RB_P_INIT(CausalFilterNode, gain,   CPP2RB_VALUE_FROM_DOUBLE(1.0));
-  CPP2RB_P_INIT(CausalFilterNode, ff_coeffs, rb_ary_new3(1, DBL2NUM(1.0)));
-  CPP2RB_P_INIT(CausalFilterNode, fb_coeffs, rb_ary_new3(1, DBL2NUM(1.0)));
+  CPP2RB_P_INIT(CausalFilterNode,  bypass, CPP2RB_VALUE_FROM_BOOL(false));
+  CPP2RB_P_INIT(CausalFilterNode,  gain,   CPP2RB_VALUE_FROM_DOUBLE(1.0));
+  CPP2RB_P_INIT(CausalFilterNode,  ff_coeffs,
+    CPP2RB_VALUE_FROM_DOUBLE_ARRAY ({1.0}));
+  CPP2RB_P_INIT(CausalFilterNode,  fb_coeffs,
+    CPP2RB_VALUE_FROM_DOUBLE_ARRAY ({1.0}));
 }
 
 audio_sample_t* CausalFilterNode::get_buffer(nframes_t nframes)
@@ -83,8 +85,9 @@ audio_sample_t* CausalFilterNode::get_buffer(nframes_t nframes)
 
 void Init_CausalFilterNode()
 {
-  rb_CausalFilterNode = rb_define_class_under(rb_ThisModule, "CausalFilterNode", rb_Node);
-  
+  rb_CausalFilterNode = rb_define_class_under(rb_ThisModule,
+                                              "CausalFilterNode",
+                                              rb_Node);
   CPP2RB_W_FUNCS_REG(CausalFilterNode);
   CPP2RB_P_FUNCS_REG(CausalFilterNode, bypass, "bypass");
   CPP2RB_P_FUNCS_REG(CausalFilterNode, gain,   "gain");

@@ -114,3 +114,12 @@ std::vector<double> CPP2RB_VALUE_TO_VEC_DOUBLE(VALUE ary)
 
 #define CPP2RB_VALUE_FROM_BOOL(x)   (x ? Qtrue : Qfalse)
 #define CPP2RB_VALUE_FROM_DOUBLE    DBL2NUM
+
+VALUE CPP2RB_VALUE_FROM_DOUBLE_ARRAY(std::initializer_list<double> list)
+{
+  VALUE a = rb_ary_new();
+  for(auto it=list.begin(); it!=list.end(); ++it)
+    rb_ary_push(a, CPP2RB_VALUE_FROM_DOUBLE(*it));
+  
+  return a;
+}
